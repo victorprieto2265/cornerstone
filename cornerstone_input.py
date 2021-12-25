@@ -26,6 +26,8 @@ print('start time: %s Eastern Time\n' % time.ctime())
 # TODO there must be a better way to do this
 error = 0
 
+# %% function definitions
+
 
 # checks for duplicates and (optional) character limits
 def error_check(alist, listname, max_length=float('inf'), max_duplicates=1):
@@ -78,6 +80,8 @@ prelim_group_names = "./inputs/prelim_group_names"
 room_assignments = "./inputs/room_assignments"
 prelim_results = "./inputs/prelim_results"
 playoff_bracket_names = "./inputs/playoff_bracket_names"
+sunday_input = "./inputs/sunday_input"
+
 
 # TODO write separate script that reads above lists + identifies rr schedules
 # will need to import list of teams and generate prelim_round_count
@@ -86,11 +90,12 @@ playoff_rr_schedule_input = f"./rr_schedules/rr_{playoff_team_count}"
 df3 = pd.read_excel(f'{rr_schedule}.xlsx')
 df6 = pd.read_excel(f'{playoff_bracket_names}.xlsx')
 
+# TODO modify max_duplicates to be flexible on schedule and not hard coded
 # import files using above file locations, error check imported lists/sublists
 list_of_teams = analyze_input(list_of_teams)
 error_check([sublist[0] for sublist in list_of_teams],
             'the team names in list_of_teams',
-            max_length=36)
+            max_length=26)
 error_check([sublist[1] for sublist in list_of_teams],
             'the team codes in list_of_teams',
             max_length=4)
@@ -110,12 +115,12 @@ error_check([sublist[0] for sublist in room_assignments],
             'the list of rooms in room_assignments',
             max_length=14)
 
-# script does not require playoff information to be present
+# script does not require playoff or sunday information to be present
 try:
     prelim_results = analyze_input(prelim_results)
     error_check([sublist[0] for sublist in prelim_results],
                 'the team names in prelim_results',
-                max_length=36)
+                max_length=26)
     error_check([sublist[1] for sublist in prelim_results],
                 'the brackets in prelim_results',
                 max_length=12,
@@ -123,6 +128,18 @@ try:
 
     playoff_brackets = analyze_input(playoff_bracket_names)
     playoff_bracket_names = [' '.join(strings) for strings in playoff_brackets]
+    
+    sunday_input = analyze_input(sunday_input)
+    error_check([sublist[0] for sublist in sunday_input],
+                'the team names in sunday_input',
+                max_length=26)
+    error_check([sublist[1] for sublist in sunday_input],
+                'the team codes in sunday_input',
+                max_length=4)
+    error_check([sublist[2] for sublist in sunday_input],
+                'the playoff brackets in sunday_input',
+                max_length=15,
+                max_duplicates=6)
 
 except FileNotFoundError:
     pass
@@ -152,13 +169,19 @@ Non autem maiores aut reprehenderit nulla sit repellendus dolore ut illum incidu
 # also created a dictionary where values are team codes (i.e. GVA)
 prelim_team_dict = {}
 prelim_teamcode_dict = {}
+team_group_dict = {}
+teamcode_group_dict = {}
 for i in list_of_teams:
     key = i[2] + str(i[3])
     value = i[0]  # team name
     prelim_team_dict[key] = value
+    # also created dictionary where k/v pairs are swapped
+    team_group_dict[value] = key
+
     value = i[1]  # team code
     prelim_teamcode_dict[key] = value
-
+    # also created dictionary where k/v pairs are swapped
+    teamcode_group_dict[value] = key
 
 # key is team name
 # value is team code
@@ -199,7 +222,7 @@ if prelim_team_count >= 15 or playoff_team_count >= 15:
 if error == 0:
     print('\nNo errors detected upon import.')
 else:
-    print('\nErrors detected during import')
+    print('\n*** Errors detected during import! ***')
     # sys.exit()
     
 # TODO the above, which will cut down the number of input files by two

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.18)  26 NOV 2021 15:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.18)  17 DEC 2021 12:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -229,96 +229,56 @@ LaTeX Font Info:    ... okay on input line 15.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-7.
+8.
 (/usr/local/texlive/2021basic/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-7.
+8.
 
 (/usr/local/texlive/2021basic/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-17.
+18.
 
 (/usr/local/texlive/2021basic/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-17.
+18.
 
 (/usr/local/texlive/2021basic/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 17.
+(Font)              <12> on input line 18.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 17.
+(Font)              <8> on input line 18.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 17.
+(Font)              <6> on input line 18.
  [1
 
 {/usr/local/texlive/2021basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (35.73439pt too wide) in alignment at lines 27--32
- [] [] [] [] [] 
+Underfull \vbox (badness 10000) detected at line 65
  []
 
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 32--37
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 37--42
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 42--64
- [] [] [] [] [] 
- []
-
-
-Underfull \vbox (badness 10000) detected at line 64
- []
-
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 64--84
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 84--104
- [] [] [] [] [] 
- []
-
-[2]
-Overfull \hbox (35.73439pt too wide) in alignment at lines 104--124
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (35.73439pt too wide) in alignment at lines 124--140
- [] [] [] [] [] 
- []
-
-[3] [4] (./playoff_team_index.aux) ) 
+[2] [3] [4] (./playoff_team_index.aux) ) 
 Here is how much of TeX's memory you used:
- 2461 strings out of 480445
- 34640 string characters out of 5892390
- 372828 words of memory out of 5000000
- 19735 multiletter control sequences out of 15000+600000
+ 2463 strings out of 480445
+ 34661 string characters out of 5892390
+ 375829 words of memory out of 5000000
+ 19737 multiletter control sequences out of 15000+600000
  430232 words of font info for 43 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  68i,7n,74p,218b,215s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2021basic/texmf-dist/fo
-nts/enc/dvips/lm/lm-ec.enc}</usr/local/texlive/2021basic/texmf-dist/fonts/type1
-/public/lm/lmbx10.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/publ
-ic/lm/lmr10.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/public/lm/
-lmr12.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/public/lm/lmr17.
-pfb>
-Output written on playoff_team_index.pdf (4 pages, 114810 bytes).
+{/usr/local/texlive/2021basic/texmf-dis
+t/fonts/enc/dvips/lm/lm-ec.enc}</usr/local/texlive/2021basic/texmf-dist/fonts/t
+ype1/public/lm/lmbx10.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/
+public/lm/lmr10.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/public
+/lm/lmr12.pfb></usr/local/texlive/2021basic/texmf-dist/fonts/type1/public/lm/lm
+r17.pfb>
+Output written on playoff_team_index.pdf (4 pages, 115268 bytes).
 PDF statistics:
  34 PDF objects out of 1000 (max. 8388607)
  23 compressed objects within 1 object stream

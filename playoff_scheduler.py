@@ -5,7 +5,8 @@ import time, sys
 # from function_definitions import grid_rearranger
 from standard_scheduler import standard_schedule
 from cornerstone_input import (playoff_bracket_names,
-                               team_code_dict,
+                               team_code_dict, code_team_dict,
+                               teamcode_group_dict,
                                playoff_room_dict)
 from tournament_format import (tier_count,
                                advance_count,
@@ -14,6 +15,7 @@ from tournament_format import (tier_count,
 from prelim_analysis import (sorted_list,
                              bracket_team,
                              team_ppb)  # these might get used for repeat check
+from function_definitions import playoff_team
 
 # place additional modules here
 
@@ -67,15 +69,9 @@ def snake_seed(list_of_teams, bracket_count):
 
 # %% generate new list of teams, divided by playoff bracket
 
-print('\n\npoint 1')
-print(*sorted_list[0:16], sep='\n\n')
-
 # split sorted_list into several tiers, for non-NSC tournaments this will
 # almost certainly be one tier
 split_sorted_list = split_list(sorted_list, tier_count)
-
-print('\n\npoint 2')
-print(*split_sorted_list[0:2], sep='\n\n')
 
 for tier in split_sorted_list:
     seeded_list = snake_seed(tier, playoff_group_count/tier_count)
@@ -87,14 +83,8 @@ for tier in split_sorted_list:
     for j in seeded_list:
         seeded_team_list.append(j)
 
-print('\n\npoint 3')
-print(*seeded_team_list[0:16], sep='\n\n')
-
 # split the above list by number of playoff brackets, creating list of lists
 list_of_teams = split_list(seeded_team_list, playoff_group_count)
-
-print('\n\npoint 4')
-print(*list_of_teams[0:2], sep='\n\n')
 
 
 # %% repeat checker (checks to see if two teams ended up in same bracket?)
@@ -135,8 +125,18 @@ for index, bracket_name in enumerate(playoff_bracket_names):
         # creating a dictionary where k:v pairs are flipped
         teamcode_playoff_dict[value] = key
 
-# visual debugging
-# print(teamcode_playoff_dict)
+# create list for sunday scheduler to detecting carryover opponents
+
+playoff_team_list = []
+for k, v in teamcode_playoff_dict.items():
+    name = code_team_dict[k]
+    code = k
+    prelim_group = teamcode_group_dict[code][0:-1]
+    playoff_bracket = v[0:-1]
+    playoff_seed = v[-1]
+    playoff_team_temp = playoff_team(name, code, prelim_group,
+                                     playoff_bracket, playoff_seed)
+    playoff_team_list.append(playoff_team_temp)
 
 # %% create full schedule grid
 
