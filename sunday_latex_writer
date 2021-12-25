@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# %% import modules/functions, header
+import time
+import os
+# place additional modules here
+
+scriptname = os.path.basename(__file__)
+
+description = f"""
+
+*** script executed = {scriptname} ***
+
+This script accepts schedule grids from sunday_scheduler and produces
+Latex files.
+
+Created on Thu Dec 23 19:25:05 2021
+
+@author: Victor Prieto
+
+"""
+
+
+# %% start runtime
+start_time = time.time()
+print('\n', description)
+print('start time: %s' % time.ctime())
+
+# %% insert code below
+
+
+# %% end runtime
+print('end time: %s' % time.ctime())
+print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
+print("--- %s minutes ---" % '%.3f' % (time.time()/60 - start_time/60))
