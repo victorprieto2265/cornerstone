@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
+import sys
 from pylatex import (Document, Section, Tabular, Command,
                      NewPage, LineBreak, LongTable, HugeText,
                      VerticalSpace, Center, MultiColumn)
@@ -16,6 +17,8 @@ header = """
 Depository for a bunch of class and function definitions shared across
 prelim/playoff scripts.
 
+TODO what if snake seed is fed a list with odd number of teams?
+
 Created on Mon Nov 1 13:53:44 2021 Eastern Time
 
 @author: Victor Prieto
@@ -29,6 +32,51 @@ print('\n', header)
 print('start time: %s' % time.ctime())
 
 # %% function definitions
+
+
+def split_list(alist, wanted_parts=1):
+    length = len(alist)
+    return [alist[i*length // wanted_parts: (i+1)*length // wanted_parts]
+            for i in range(wanted_parts)]
+
+
+def snake_seed(list_of_teams, bracket_count):
+    """
+    Parameters
+    ----------
+    list_of_teams : list
+        A list of teams for reordering into playoff brackets by snake seeding.
+    bracket_count : int
+        Number of playoff brackets to snake seed across.
+
+    Returns
+    -------
+    newlist : list
+        Same list of teams accepted as input, but reordered by snake seeding.
+        Example:
+            (1, 2, 3, 4... 23, 24)
+            snake seeded across four brackets becomes
+            (1, 8, 9, 16, 17, 24, 2, 7, 10, 15, 18... 12, 13, 20, 21)
+
+    """
+
+    # generates sequence of indices for snake seeding
+    sequence_length = 2 * bracket_count
+    reps = len(list_of_teams) / sequence_length
+    sequence = []
+    for i in range(0, int(sequence_length/2)):
+        for j in range(0, int(reps)):
+            sequence.append(i+j*sequence_length)
+            sequence.append((sequence_length-1-i)+j*sequence_length)
+
+    # quits program if odd number of teams in list_of_teams
+    if (len(list_of_teams)) % 2 == 1:
+        print('ODD NUMBER OF TEAMS DETECTED')
+        sys.exit()
+
+    # use sequence of indices to generate new list of teams
+    newlist = (list_of_teams[index] for index in sequence)
+    return newlist
 
 
 def alternating_rows(doc, color):
@@ -60,9 +108,9 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     doc.preamble.append(Command('title', tournament_name))
     doc.preamble.append(Command('author', tournament_location))
     doc.preamble.append(Command('date', tournament_date))
-    
+
     doc.append(NoEscape(r'\newcolumntype{Y}{>{\centering\arraybackslash}X}'))
-    
+
     # TODO vertically center docname text on page
     if title is True:
         doc.append(NoEscape(r'\maketitle'))

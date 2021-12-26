@@ -13,9 +13,9 @@ from tournament_format import (tier_count,
                                playoff_group_count,
                                prelim_round_count)
 from prelim_analysis import (sorted_list,
-                             bracket_team,
+                             placement_team,
                              team_ppb)  # these might get used for repeat check
-from function_definitions import playoff_team
+from function_definitions import playoff_team, snake_seed, split_list
 
 # place additional modules here
 
@@ -26,8 +26,6 @@ Created on Sat Oct  9 18:37:20 2021 Eastern Time
 This script accepts the prelim_analysis output and reorders teams into
 a list for playoffs.
 
-TODO does snake_seed work with odd team numbers? (right now it error catches)
-
 @author: Victor Prieto
 
 """
@@ -37,40 +35,10 @@ start_time = time.time()
 print('\n', header)
 print('start time: %s Eastern Time' % time.ctime())
 
-# %% function definitions
-
-
-def split_list(alist, wanted_parts=1):
-    length = len(alist)
-    return [alist[i*length // wanted_parts: (i+1)*length // wanted_parts]
-            for i in range(wanted_parts)]
-
-
-def snake_seed(list_of_teams, bracket_count):
-
-    # generates sequence of indices for snake seeding
-    sequence_length = 2 * bracket_count
-    reps = len(list_of_teams) / sequence_length
-    sequence = []
-    for i in range(0, int(sequence_length/2)):
-        for j in range(0, int(reps)):
-            sequence.append(i+j*sequence_length)
-            sequence.append((sequence_length-1-i)+j*sequence_length)
-
-    # quits program if odd number of teams in list_of_teams
-    if (len(list_of_teams)) % 2 == 1:
-        print('ODD NUMBER OF TEAMS DETECTED')
-        sys.exit()
-
-    # use sequence of indices to generate new list of teams
-    newlist = (list_of_teams[index] for index in sequence)
-    return newlist
-
-
 # %% generate new list of teams, divided by playoff bracket
 
-# split sorted_list into several tiers, for non-NSC tournaments this will
-# almost certainly be one tier
+# split sorted_list into several tiers
+# for non-NSC tournaments this will almost certainly be one tier
 split_sorted_list = split_list(sorted_list, tier_count)
 
 for tier in split_sorted_list:
@@ -85,7 +53,6 @@ for tier in split_sorted_list:
 
 # split the above list by number of playoff brackets, creating list of lists
 list_of_teams = split_list(seeded_team_list, playoff_group_count)
-
 
 # %% repeat checker (checks to see if two teams ended up in same bracket?)
 
