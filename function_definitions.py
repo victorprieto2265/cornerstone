@@ -53,10 +53,11 @@ def snake_seed(list_of_teams, bracket_count):
     -------
     newlist : list
         Same list of teams accepted as input, but reordered by snake seeding.
+        The list is also split into the number of playoff brackets.
         Example:
             (1, 2, 3, 4... 23, 24)
             snake seeded across four brackets becomes
-            (1, 8, 9, 16, 17, 24, 2, 7, 10, 15, 18... 12, 13, 20, 21)
+            ((1, 8, 9, 16, 17, 24), (2, 7, 10, 15, 18... 12, 13, 20, 21))
 
     """
 

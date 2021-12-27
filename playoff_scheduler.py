@@ -54,13 +54,12 @@ for tier in split_sorted_list:
 # split the above list by number of playoff brackets, creating list of lists
 list_of_teams = split_list(seeded_team_list, playoff_group_count)
 
+print(*list_of_teams, sep='\n\n')
+
 # %% repeat checker (checks to see if two teams ended up in same bracket?)
 
 # TODO actually write the repeat checker
 for bracket in list_of_teams:
-#    list_of_groups = []
-#    for i in bracket:
-#        list_of_groups.append(i[1])
     list_of_groups = list((i[1] for i in bracket))
 
 # %% generate playoff seed / team dictionary
@@ -78,18 +77,18 @@ for index, bracket_name in enumerate(playoff_bracket_names):
     # print(f'bracket_name = {bracket_name}')
 
     for index2, team in enumerate(list_of_teams[index]):
-        
-        # visual debugging
-        # print(f'\nindex2 = {index2}')
-        # print(f'team = {team}')
-        
+                
         key = bracket_name + str(index2+1)
         value = team[0]
         playoff_team_dict[key] = value
         value = team_code_dict[value]
         playoff_teamcode_dict[key] = value
 
-        # creating a dictionary where k:v pairs are flipped
+        # visual debugging
+        print(f'\nkey = {key}')
+        print(f'team = {team}')
+
+# creating a dictionary where k:v pairs are flipped
         teamcode_playoff_dict[value] = key
 
 # create list for sunday scheduler to detecting carryover opponents
