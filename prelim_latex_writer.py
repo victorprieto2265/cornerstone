@@ -28,22 +28,18 @@ header = """
 
 Writes .tex file outputs for prelim schedules.
 
+Note: there is a known bug in the latex compiler, and sometimes a file
+has to be compiled twice in order for table widths to be formatted properly
+in line with their header/footer row. This might be specific to the latex
+compiler I'm using, but something to keep aware of.
+
 Created on Wed Oct 13 18:21:31 2021 Eastern Time
 
 @author: Victor Prieto
 
-TODO add alternating shades of gray/white in specific schedules
-TODO same for playoffs
-
 TODO produce team-specific schedules in alphabetical order, probably not
 necessary for room-specific schedules since rooms will be grouped into
 brackets? Not a big deal for rooms but definitely helpful for teams.
-
-TODO The page break on the room specific schedules works out perfectly if
-there are exactly three rooms listed on the page. If there are four, then
-the page looks ugly. Find a solution for this... which might be creating
-an individual page for each room instead of putting multiple on same page.
-At least that leaves lots of room for text instructions.
 
 """
 

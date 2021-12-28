@@ -15,7 +15,8 @@ from tournament_format import (tier_count,
 from prelim_analysis import (sorted_list,
                              placement_team,
                              team_ppb)  # these might get used for repeat check
-from function_definitions import playoff_team, snake_seed, split_list
+from function_definitions import (playoff_team, snake_seed, split_list,
+                                  duplicate_checker)
 
 # place additional modules here
 
@@ -54,13 +55,16 @@ for tier in split_sorted_list:
 # split the above list by number of playoff brackets, creating list of lists
 list_of_teams = split_list(seeded_team_list, playoff_group_count)
 
-print(*list_of_teams, sep='\n\n')
-
 # %% repeat checker (checks to see if two teams ended up in same bracket?)
 
-# TODO actually write the repeat checker
-for bracket in list_of_teams:
-    list_of_groups = list((i[1] for i in bracket))
+print('\n')
+for index, bracket_name in enumerate(playoff_bracket_names):
+    list_of_groups = list((i[1] for i in list_of_teams[index]))
+    print(f'Prelim groups advancing to playoff bracket {bracket_name}:')
+    print(list_of_groups)
+    result = duplicate_checker(list_of_groups)
+    print(f'Duplicates in {bracket_name}: {result}\n')
+print('\n')
 
 # %% generate playoff seed / team dictionary
 
@@ -73,11 +77,10 @@ teamcode_playoff_dict = {}
 for index, bracket_name in enumerate(playoff_bracket_names):
 
     # visual debugging
-    # print(f'\n\nindex = {index}')
-    # print(f'bracket_name = {bracket_name}')
+    print(f'\n\nbracket_name = {bracket_name}')
 
     for index2, team in enumerate(list_of_teams[index]):
-                
+
         key = bracket_name + str(index2+1)
         value = team[0]
         playoff_team_dict[key] = value
@@ -91,8 +94,7 @@ for index, bracket_name in enumerate(playoff_bracket_names):
 # creating a dictionary where k:v pairs are flipped
         teamcode_playoff_dict[value] = key
 
-# create list for sunday scheduler to detecting carryover opponents
-
+# create list for sunday scheduler to detect carryover opponents?
 playoff_team_list = []
 for k, v in teamcode_playoff_dict.items():
     name = code_team_dict[k]
