@@ -13,7 +13,7 @@ Created on Mon Nov 22 12:50:12 2021
 Definition of functions used for creating a table for a round robin schedule,
 between 4 and 14 teams.
 
-TODO write a new scheduler function for crossover playoffs round robins
+TODO create new files for crossover templates other than B8
 TODO maybe write function (called pylatex_stringer) that does the following:
 1. pylatex writes to a .tex file
 2. python reads the .tex file as a string, then deletes the file
@@ -32,7 +32,8 @@ print('start time: %s' % time.ctime())
 # %% function definitions
 
 
-def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1):
+def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1,
+                      crossover=False, superplayoff=False):
     """
 
 
@@ -68,8 +69,12 @@ def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1):
     teamcount = len(teamlist)
     roomcount = teamcount // 2
 
-    # retrieve correct rr_schedule
+    # identify correct rr_schedule and import template
     rr_schedule = f"./rr_schedules/rr_{teamcount}"
+    if crossover is not False:
+        print(f'use crossover schedule {crossover}{teamcount}')
+        rr_schedule = f"./rr_schedules/rr_crossover{crossover}{teamcount}"
+
     try:
         rr_schedule = pd.read_excel(f'{rr_schedule}.xlsx').values.tolist()
     except FileNotFoundError:

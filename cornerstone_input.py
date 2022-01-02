@@ -12,6 +12,10 @@ This script imports all of the input files, except tournament format,
 which is handled by the tournament_format script.
 
 TODO uncomment sys.exit at end of this script for testing
+TODO figure out how to handle blank spaces and/or none in input file...
+There was an unusual error where integers were being converted to floats
+if one of the cells in a range was empty instead of string 'none'.
+TODO apparently bracket names (and presumably other things) are case-sensitive.
 
 @author: Victor Prieto
 
@@ -80,7 +84,7 @@ prelim_group_names = "./inputs/prelim_group_names"
 room_assignments = "./inputs/room_assignments"
 prelim_results = "./inputs/prelim_results"
 playoff_bracket_names = "./inputs/playoff_bracket_names"
-sunday_input = "./inputs/sunday_input"
+super_input = "./inputs/super_input"
 
 
 # TODO write separate script that reads above lists + identifies rr schedules
@@ -115,7 +119,7 @@ error_check([sublist[0] for sublist in room_assignments],
             'the list of rooms in room_assignments',
             max_length=14)
 
-# script does not require playoff or sunday information to be present
+# script does not require playoff or super information to be present
 try:
     prelim_results = analyze_input(prelim_results)
     error_check([sublist[0] for sublist in prelim_results],
@@ -128,16 +132,16 @@ try:
 
     playoff_brackets = analyze_input(playoff_bracket_names)
     playoff_bracket_names = [' '.join(strings) for strings in playoff_brackets]
-    
-    sunday_input = analyze_input(sunday_input)
-    error_check([sublist[0] for sublist in sunday_input],
-                'the team names in sunday_input',
+
+    super_input = analyze_input(super_input)
+    error_check([sublist[0] for sublist in super_input],
+                'the team names in super_input',
                 max_length=26)
-    error_check([sublist[1] for sublist in sunday_input],
-                'the team codes in sunday_input',
+    error_check([sublist[1] for sublist in super_input],
+                'the team codes in super_input',
                 max_length=4)
-    error_check([sublist[2] for sublist in sunday_input],
-                'the playoff brackets in sunday_input',
+    error_check([sublist[2] for sublist in super_input],
+                'the playoff brackets in super_input',
                 max_length=15,
                 max_duplicates=6)
 
@@ -199,12 +203,18 @@ for team in list_of_teams:
 # also created dictionary where key is a playoff bracket instead
 prelim_room_dict = {}
 playoff_room_dict = {}
+super_room_dict = {}
 for i in room_assignments:
     key = i[1] + str(i[2])
     value = i[0]
     prelim_room_dict[key] = value
     key = i[3] + str(i[4])
     playoff_room_dict[key] = value
+    try:
+        key = i[5] + str(i[6])
+        super_room_dict[key] = value
+    except IndexError:
+        continue
 
 # %% error catching
 

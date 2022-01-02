@@ -93,6 +93,12 @@ def duplicate_checker(alist):
     return False
 
 
+def remove_duplicates(alist):
+    newlist = []
+    [newlist.append(x) for x in alist if x not in newlist]
+    return newlist
+
+
 def start_latex(filename_input, docname, title=True, fontsize=False):
     geometry_options = {
         "includeheadfoot": True
