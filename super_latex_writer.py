@@ -1,50 +1,49 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-# %% import section
+# %% import modules/functions, header
 import time
-from pylatex import (Document, Section, Tabularx, Command,
-                     NewPage, LineBreak, LongTable, HugeText,
-                     VerticalSpace, Center, LargeText)
+import os
+from pylatex import (Document, Section, Subsection, Tabularx, Command,
+                     NewPage, PageStyle, LargeText, HugeText,
+                     LineBreak, LongTable, MultiColumn,
+                     MultiRow, VerticalSpace)
 from pylatex.utils import NoEscape
 
-from function_definitions import (start_latex, close_latex,
-                                  header_stringify, playoff_team,
-                                  alternating_rows)
-from playoff_scheduler import (full_schedule_grid, playoff_teamcode_dict,
-                               teamcode_playoff_dict)
-from tournament_format import (tournament_name, tournament_location,
-                               tournament_date, playoff_team_count,
-                               prelim_round_count)
-from cornerstone_input import (list_of_teams, playoff_bracket_names,
+from tournament_format import (prelim_round_count, playoff_round_count)
+
+from cornerstone_input import (list_of_teams,
                                code_team_dict, lorem)
+from super_scheduler import (full_schedule_grid, super_record_dict,
+                             super_bracket_list, teamcode_super_dict)
+from playoff_scheduler import (playoff_teamcode_dict,
+                               teamcode_playoff_dict)
+from function_definitions import (playoff_team, start_latex, close_latex,
+                                  header_stringify, alternating_rows)
 from specific_functions import (get_team_list,
                                 get_room_list,
                                 specific_team_scheduler,
                                 specific_room_scheduler,
                                 clean_up_grid)
-import os
-import os.path
 
-# %% header, runtime
-header = r"""
+header = """
 
-Writes .tex file outputs for playoff schedules.
+Writes .tex outputs for superplayoffs schedule.
 
-Created on Mon Nov 1 14:16:49 2021 Eastern Time
+Created on Sun Jan  2 15:42:28 2022
 
 @author: Victor Prieto
 
 """
 
-# starts program runtime
+
+# %% start runtime
 start_time = time.time()
-print('\n', header, '\n')
-print('start time: %s Eastern Time' % time.ctime())
+print('\n', header)
+print('start time: %s' % time.ctime())
 
 # %% create team index
 
-filename = './outputs/playoff_team_index'
+filename = './outputs/super_team_index'
 docname = 'Team Index'
 
 doc = start_latex(filename, docname)
@@ -52,12 +51,11 @@ doc = start_latex(filename, docname)
 doc.append(NoEscape(r'\rowcolors{3}{gray!15}{white}'))
 
 alternating_rows(doc, 'gray!15')
-with doc.create(LongTable('|ll|lc|l|')) as table:
+with doc.create(LongTable('|ll|c|c|')) as table:
     table.append(NoEscape(r'\rowcolor{gray!30}'))
     head_foot_row = (r'\textbf{Team Name} & \textbf{Code}'
-                     + r'&\textbf{Prelim Group}'
-                     + r'&\textbf{Prelim Finish}'
-                     + r'&\textbf{Playoff Bracket}\\')
+                     + r'&\textbf{Superplayoff Bracket}'
+                     + r'&\textbf{W-L}\\')
     table.add_hline()
     table.append(NoEscape(head_foot_row))
     table.add_hline()
@@ -78,22 +76,23 @@ with doc.create(LongTable('|ll|lc|l|')) as table:
         playoff_bracket = teamcode_playoff_dict[i[1]][:-1]
         team = playoff_team(i[0], i[1], i[2],
                             playoff_bracket, playoff_seed)
-        table.add_row(team.name, team.code, team.prelim_group,
-                      team.playoff_seed, team.playoff_bracket)
+        super_bracket = teamcode_super_dict[i[1]][:-1]
+        record = super_record_dict[team.code]
+        table.add_row(team.name, team.code,
+                      super_bracket, record)
 
 doc = close_latex(filename, doc)
 
-
 # %% create full standard grid schedule
 
-filename = './outputs/playoff_full_schedule'
-docname = 'Playoffs - Complete Schedule'
+filename = './outputs/super_full_schedule'
+docname = 'Superplayoffs - Complete Schedule'
 
 doc = start_latex(filename, docname)
 
-for index, playoff_bracket in enumerate(playoff_bracket_names):
+for index, super_bracket in enumerate(super_bracket_list):
     alternating_rows(doc, 'gray!15')
-    table_title = f'Playoff Bracket: {playoff_bracket}'
+    table_title = f'Superplayoff Bracket: {super_bracket}'
     with doc.create(Section(table_title, numbering=False)):
 
         schedule_grid = full_schedule_grid[index]
@@ -121,7 +120,7 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-schedule_path = r'./outputs/playoff_team_specific_schedules/'
+schedule_path = r'./outputs/superplayoff_team_specific_schedules/'
 
 try:
     os.mkdir(schedule_path)
@@ -129,12 +128,12 @@ except FileExistsError:
     None
 
 filename = schedule_path + 'team_specific_schedules'
-docname = 'Playoff Schedules - Team Specific'
+docname = 'Superplayoff Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
 
-    bracket = playoff_bracket_names[index]
+    bracket = super_bracket_list[index]
 
     room_list = get_room_list(schedule_grid)
     team_list = get_team_list(schedule_grid)
@@ -143,7 +142,7 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     basic_schedule_grid = clean_up_grid(schedule_grid)
 
     # define number for first round in schedule
-    round_start = prelim_round_count+1
+    round_start = prelim_round_count+playoff_round_count+1
 
     # iterate for each team in teamlist
     for team in team_list:
@@ -153,7 +152,7 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(HugeText(team_name))
         doc.append(VerticalSpace('8pt'))
         doc.append(LineBreak())
-        doc.append(LargeText(f'Playoff Bracket - {bracket}'))
+        doc.append(LargeText(f'Superplayoff Bracket - {bracket}'))
         doc.append(NoEscape(r'\end{center}'))
 
         schedule = specific_team_scheduler(team,
@@ -191,7 +190,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-schedule_path = r'./outputs/playoff_room_specific_schedules/'
+schedule_path = r'./outputs/superplayoff_room_specific_schedules/'
 
 try:
     os.mkdir(schedule_path)
@@ -199,12 +198,12 @@ except FileExistsError:
     None
 
 filename = schedule_path + 'room_specific_schedules'
-docname = 'Playoff Schedules - Room Specific'
+docname = 'Superplayoff Schedules - Room Specific'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
 
-    bracket = playoff_bracket_names[index]
+    bracket = super_bracket_list[index]
 
     room_list = get_room_list(schedule_grid)
     # FIXME do these two lines still apply for odd rounds? prob not.
@@ -213,7 +212,7 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     clean_up_grid(schedule_grid)
 
     # define number for first round in schedule
-    round_start = prelim_round_count+1
+    round_start = prelim_round_count+playoff_round_count+1
 
     # iterate for each room in roomlist
     for room in room_list:
@@ -226,7 +225,7 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         # bracket and room above room specific schedule
 
         doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('Room Specific Playoff Schedule'))
+        doc.append(HugeText('Room Specific Superplayoff Schedule'))
         doc.append(VerticalSpace('8pt'))
         doc.append(LineBreak())
         doc.append(LargeText(f'Bracket - {bracket}'))
@@ -262,10 +261,6 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 doc = close_latex(filename, doc)
 
 # %% end runtime
-
-# for visual debugging
-# print('\n\n***full schedule grid 1***\n\n')
-# print(*full_schedule_grid[0:3], sep='\n\n')
-
+print('end time: %s' % time.ctime())
 print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
 print("--- %s minutes ---" % '%.3f' % (time.time()/60 - start_time/60))

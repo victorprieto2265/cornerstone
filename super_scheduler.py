@@ -5,7 +5,7 @@ import time
 import os
 import sys
 
-from cornerstone_input import super_input, super_room_dict
+from cornerstone_input import super_input, super_room_dict, team_code_dict
 from playoff_scheduler import playoff_team_list
 from function_definitions import remove_duplicates
 from standard_scheduler import standard_schedule
@@ -46,9 +46,6 @@ print('start time: %s' % time.ctime())
 
 super_input.sort(key=lambda x: (x[4], x[5]))
 
-print(*super_input, sep='\n')
-sys.exit()
-
 super_bracket_list = [sublist[3] for sublist in super_input]
 carryover_brackets = [sublist[3] for sublist in super_input
                       if sublist[6] != 0]
@@ -60,15 +57,28 @@ crossover_brackets = remove_duplicates(carryover_brackets)
 # TODO shift this over to input?
 super_team_dict = {}
 super_teamcode_dict = {}
+teamcode_super_dict = {}
+super_record_dict = {}
 for i in super_input:
     print(i)
     key = i[3] + str(i[5])  # bracket-seed
     value = i[0]  # team name
     super_team_dict[key] = value
 
-    value = i[1]  # team code
+    value = team_code_dict[value]  # team code
+    print(f'key:value = {key}:{value}')
     super_teamcode_dict[key] = value
 
+    # creating a dictionary where k:v pairs are flipped
+    teamcode_super_dict[value] = key
+
+    if i[6] == 1:
+        record = '1-0'
+    elif i[6] == -1:
+        record = '0-1'
+    else:
+        record = ''
+    super_record_dict[value] = record
 
 # %% super grid scheduling
 

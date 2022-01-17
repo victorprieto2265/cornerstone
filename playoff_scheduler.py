@@ -84,6 +84,7 @@ for index, bracket_name in enumerate(playoff_bracket_names):
         key = bracket_name + str(index2+1)
         value = team[0]
         playoff_team_dict[key] = value
+
         value = team_code_dict[value]
         playoff_teamcode_dict[key] = value
 
