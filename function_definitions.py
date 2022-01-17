@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 import sys
+from pathlib import Path
 from pylatex import (Document, Section, Tabular, Command,
                      NewPage, LineBreak, LongTable, HugeText,
                      VerticalSpace, Center, MultiColumn)
@@ -100,6 +101,9 @@ def remove_duplicates(alist):
 
 
 def start_latex(filename_input, docname, title=True, fontsize=False):
+    
+    Path("./outputs/").mkdir(parents=True, exist_ok=True)
+    
     geometry_options = {
         "includeheadfoot": True
     }

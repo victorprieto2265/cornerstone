@@ -3,7 +3,7 @@
 
 # %% import section
 import time
-import os
+from pathlib import Path
 from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      NewPage, PageStyle, LargeText, HugeText,
                      LineBreak, LongTable, MultiColumn,
@@ -121,10 +121,7 @@ doc = close_latex(filename, doc)
 
 schedule_path = r'./outputs/prelim_team_specific_schedules/'
 
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
+Path(schedule_path).mkdir(parents=True, exist_ok=True)
 
 filename = schedule_path + 'team_specific_schedules'
 docname = 'Prelim Schedules - Team Specific'
@@ -185,10 +182,8 @@ doc = close_latex(filename, doc)
 
 schedule_path = r'./outputs/prelim_room_specific_schedules/'
 
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
+Path(schedule_path).mkdir(parents=True, exist_ok=True)
+
 
 filename = schedule_path + 'room_specific_schedules'
 docname = 'Prelim Schedules - Room Specific'
