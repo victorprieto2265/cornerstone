@@ -3,6 +3,7 @@
 
 # %% import section
 import time
+from pathlib import Path
 from pylatex import (Document, Section, Tabularx, Command,
                      NewPage, LineBreak, LongTable, HugeText,
                      VerticalSpace, Center, LargeText)
@@ -44,7 +45,7 @@ print('start time: %s Eastern Time' % time.ctime())
 
 # %% create team index
 
-filename = './outputs/playoff_team_index'
+filename = 'playoff_team_index'
 docname = 'Team Index'
 
 doc = start_latex(filename, docname)
@@ -86,7 +87,7 @@ doc = close_latex(filename, doc)
 
 # %% create full standard grid schedule
 
-filename = './outputs/playoff_full_schedule'
+filename = 'playoff_full_schedule'
 docname = 'Playoffs - Complete Schedule'
 
 doc = start_latex(filename, docname)
@@ -121,14 +122,7 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-schedule_path = r'./outputs/playoff_team_specific_schedules/'
-
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
-
-filename = schedule_path + 'team_specific_schedules'
+filename = 'team_specific_schedules'
 docname = 'Playoff Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
@@ -191,14 +185,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-schedule_path = r'./outputs/playoff_room_specific_schedules/'
-
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
-
-filename = schedule_path + 'room_specific_schedules'
+filename = 'room_specific_schedules'
 docname = 'Playoff Schedules - Room Specific'
 doc = start_latex(filename, docname)
 

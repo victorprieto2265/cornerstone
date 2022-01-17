@@ -50,7 +50,7 @@ print('start time: %s Eastern Time' % time.ctime())
 
 # %% create team index
 
-filename = './outputs/prelim_team_index'
+filename = 'prelim_team_index'
 docname = 'Team Index'
 
 doc = start_latex(filename, docname)
@@ -84,7 +84,7 @@ doc = close_latex(filename, doc)
 
 # %% create full standard schedule
 
-filename = './outputs/prelim_full_schedule'
+filename = 'prelim_full_schedule'
 docname = 'Prelims - Complete Schedule'
 
 doc = start_latex(filename, docname)
@@ -119,11 +119,7 @@ doc = close_latex(filename, doc)
 
 # %% create team-specific schedules
 
-schedule_path = r'./outputs/prelim_team_specific_schedules/'
-
-Path(schedule_path).mkdir(parents=True, exist_ok=True)
-
-filename = schedule_path + 'team_specific_schedules'
+filename = 'team_specific_schedules'
 docname = 'Prelim Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
@@ -180,12 +176,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-schedule_path = r'./outputs/prelim_room_specific_schedules/'
-
-Path(schedule_path).mkdir(parents=True, exist_ok=True)
-
-
-filename = schedule_path + 'room_specific_schedules'
+filename = 'room_specific_schedules'
 docname = 'Prelim Schedules - Room Specific'
 doc = start_latex(filename, docname)
 

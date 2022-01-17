@@ -101,13 +101,17 @@ def remove_duplicates(alist):
 
 
 def start_latex(filename_input, docname, title=True, fontsize=False):
-    
+
     Path("./outputs/").mkdir(parents=True, exist_ok=True)
+    file_path = r'./outputs/%s/' % filename_input
+    Path(file_path).mkdir(parents=True, exist_ok=True)
+    filename = file_path + filename_input        
     
     geometry_options = {
         "includeheadfoot": True
     }
-    doc = Document(filename_input, geometry_options=geometry_options)
+
+    doc = Document(filename, geometry_options=geometry_options)
 
     # this changed font sizes, but it doesn't work so well
     if fontsize is True:
@@ -135,9 +139,11 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
 
 
 def close_latex(filename_input, doc_input):
+    file_path = r'./outputs/%s/' % filename_input
+    filename = file_path + filename_input
     doc_input.generate_tex()
 
-    file = open(filename_input + '.tex')
+    file = open(filename + '.tex')
     latex_string = file.read()
     bad_string = '\\usepackage{lastpage}%'
     good_string = '\\usepackage[table]{xcolor}'
@@ -147,7 +153,7 @@ def close_latex(filename_input, doc_input):
     # for visual debugging
     # print('\n\n', latex_string[0:700], '\n\n')
 
-    with open(f'{filename_input}.tex', 'w') as f:
+    with open(f'{filename}.tex', 'w') as f:
         f.write(latex_string)
 
 

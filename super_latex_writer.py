@@ -43,7 +43,7 @@ print('start time: %s' % time.ctime())
 
 # %% create team index
 
-filename = './outputs/super_team_index'
+filename = 'super_team_index'
 docname = 'Team Index'
 
 doc = start_latex(filename, docname)
@@ -85,7 +85,7 @@ doc = close_latex(filename, doc)
 
 # %% create full standard grid schedule
 
-filename = './outputs/super_full_schedule'
+filename = 'super_full_schedule'
 docname = 'Superplayoffs - Complete Schedule'
 
 doc = start_latex(filename, docname)
@@ -120,14 +120,7 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-schedule_path = r'./outputs/superplayoff_team_specific_schedules/'
-
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
-
-filename = schedule_path + 'team_specific_schedules'
+filename = 'team_specific_schedules'
 docname = 'Superplayoff Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
@@ -190,14 +183,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-schedule_path = r'./outputs/superplayoff_room_specific_schedules/'
-
-try:
-    os.mkdir(schedule_path)
-except FileExistsError:
-    None
-
-filename = schedule_path + 'room_specific_schedules'
+filename = 'room_specific_schedules'
 docname = 'Superplayoff Schedules - Room Specific'
 doc = start_latex(filename, docname)
 
