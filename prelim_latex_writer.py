@@ -119,7 +119,7 @@ doc = close_latex(filename, doc)
 
 # %% create team-specific schedules
 
-filename = 'team_specific_schedules'
+filename = 'prelim_team_specific_schedules'
 docname = 'Prelim Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
@@ -176,7 +176,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-filename = 'room_specific_schedules'
+filename = 'prelim_room_specific_schedules'
 docname = 'Prelim Schedules - Room Specific'
 doc = start_latex(filename, docname)
 

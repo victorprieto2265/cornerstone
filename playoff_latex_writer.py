@@ -122,7 +122,7 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-filename = 'team_specific_schedules'
+filename = 'playoff_team_specific_schedules'
 docname = 'Playoff Schedules - Team Specific'
 doc = start_latex(filename, docname)
 
@@ -185,7 +185,7 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-filename = 'room_specific_schedules'
+filename = 'playoff_room_specific_schedules'
 docname = 'Playoff Schedules - Room Specific'
 doc = start_latex(filename, docname)
 
