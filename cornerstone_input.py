@@ -5,6 +5,7 @@ import pandas as pd
 
 from tournament_format import prelim_team_count, playoff_team_count
 from function_definitions import duplicate_checker
+from pylatex import NoEscape
 
 header = """
 
@@ -85,7 +86,7 @@ room_assignments = "./inputs/room_assignments"
 prelim_results = "./inputs/prelim_results"
 playoff_bracket_names = "./inputs/playoff_bracket_names"
 super_input = "./inputs/super_input"
-
+qr_input = "./inputs/qr_input"
 
 # TODO write separate script that reads above lists + identifies rr schedules
 # will need to import list of teams and generate prelim_round_count
@@ -131,6 +132,7 @@ try:
                 max_duplicates=8)
 
     playoff_brackets = analyze_input(playoff_bracket_names)
+    # converts list of lists to list of strings
     playoff_bracket_names = [' '.join(strings) for strings in playoff_brackets]
 
     super_input = analyze_input(super_input)
@@ -145,10 +147,16 @@ try:
                 max_length=15,
                 max_duplicates=6)
 
+    qr_codelist = analyze_input(qr_input)
+    qr_names = [code[0] for code in qr_codelist]
+    qr_codes = [NoEscape(' \\qrcode[height=1in]{' + code[1] + '} ')
+                for code in qr_codelist]
+    qr_captions = [code[2] for code in qr_codelist]
+
+
 except FileNotFoundError:
     pass
 
-# converts list of lists to list of strings
 
 # alphabetizes list of teams
 list_of_teams.sort(key=lambda x: x[0])
@@ -234,7 +242,7 @@ if error == 0:
 else:
     print('\n*** Errors detected during import! ***')
     # sys.exit()
-    
+
 # TODO the above, which will cut down the number of input files by two
 '''
 

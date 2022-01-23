@@ -3,9 +3,9 @@
 import time
 import sys
 from pathlib import Path
-from pylatex import (Document, Section, Tabular, Command,
-                     NewPage, LineBreak, LongTable, HugeText,
-                     VerticalSpace, Center, MultiColumn)
+from pylatex import (Document, Tabularx, Command,
+                     NewPage, HugeText, Package,
+                     VerticalSpace)
 from pylatex.utils import NoEscape
 from tournament_format import (tournament_name, tournament_location,
                                tournament_date)
@@ -20,6 +20,8 @@ prelim/playoff scripts.
 
 TODO what if snake seed is fed a list with odd number of teams?
 
+TODO what if qr_count ≠ 3?
+
 Created on Mon Nov 1 13:53:44 2021 Eastern Time
 
 @author: Victor Prieto
@@ -33,6 +35,24 @@ print('\n', header)
 print('start time: %s' % time.ctime())
 
 # %% function definitions
+
+
+def qr_code(doc, qr_codes, qr_captions):
+
+    doc.append(NoEscape(r'\rowcolors{3}{white}{white}'))
+
+    qr_count = len(qr_codes)
+    if qr_count != 3:
+        print('WARNING: number of qr_codes does not equal 3.')
+        sys.exit()
+    header_string = 'Y' * qr_count
+    width = r"\textwidth"
+
+    with doc.create(Tabularx(header_string,
+                             width_argument=NoEscape(width))) as table:
+        table.add_row(qr_codes, strict=False)
+        table.add_empty_row()
+        table.add_row(qr_captions, strict=False)
 
 
 def split_list(alist, wanted_parts=1):
@@ -103,7 +123,7 @@ def remove_duplicates(alist):
 def start_latex(filename_input, docname, title=True, fontsize=False):
 
     Path("./outputs/").mkdir(parents=True, exist_ok=True)
-    file_path = r'./outputs/%s/' % filename_input
+    file_path = r'./outputs/'
     Path(file_path).mkdir(parents=True, exist_ok=True)
     filename = file_path + filename_input        
     
@@ -123,6 +143,8 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     doc.preamble.append(Command('title', tournament_name))
     doc.preamble.append(Command('author', tournament_location))
     doc.preamble.append(Command('date', tournament_date))
+    
+    doc.packages.append(Package('qrcode'))  # add qrcode to packages
 
     doc.append(NoEscape(r'\newcolumntype{Y}{>{\centering\arraybackslash}X}'))
 
@@ -139,14 +161,14 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
 
 
 def close_latex(filename_input, doc_input):
-    file_path = r'./outputs/%s/' % filename_input
+    file_path = r'./outputs/'
     filename = file_path + filename_input
     doc_input.generate_tex()
 
     file = open(filename + '.tex')
     latex_string = file.read()
     bad_string = '\\usepackage{lastpage}%'
-    good_string = '\\usepackage[table]{xcolor}'
+    good_string = '\\usepackage[table]{xcolor}%'
     # print(latex_string)
     latex_string = latex_string.replace(bad_string, good_string)
 

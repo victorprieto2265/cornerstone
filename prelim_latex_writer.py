@@ -10,12 +10,14 @@ from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      MultiRow, VerticalSpace)
 from pylatex.utils import NoEscape
 from cornerstone_input import (list_of_teams,
-                               code_team_dict, lorem)
+                               code_team_dict,
+                               qr_codes, qr_captions, lorem)
 
 from prelim_scheduler import (full_schedule_grid,
                               prelim_group_names)
 from function_definitions import (prelim_team, start_latex, close_latex,
-                                  header_stringify, alternating_rows)
+                                  header_stringify, alternating_rows,
+                                  qr_code)
 from specific_functions import (get_team_list,
                                 get_room_list,
                                 specific_team_scheduler,
@@ -166,9 +168,10 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(lorem)
 
         doc.append(VerticalSpace('30pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+
+        qr_codes_1 = qr_codes[0:3]
+        qr_captions_1 = qr_captions[0:3]
+        qr_code(doc, qr_codes_1, qr_captions_1)
 
         doc.append(NewPage())
 
@@ -225,10 +228,10 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         # for eventual text input
         doc.append(lorem[1:701])
 
-        doc.append(VerticalSpace('140pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+        doc.append(VerticalSpace('40pt'))
+        qr_codes_2 = qr_codes[3:6]
+        qr_captions_2 = qr_captions[3:6]
+        qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 

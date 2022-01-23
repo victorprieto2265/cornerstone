@@ -11,14 +11,15 @@ from pylatex.utils import NoEscape
 
 from function_definitions import (start_latex, close_latex,
                                   header_stringify, playoff_team,
-                                  alternating_rows)
+                                  alternating_rows, qr_code)
 from playoff_scheduler import (full_schedule_grid, playoff_teamcode_dict,
                                teamcode_playoff_dict)
 from tournament_format import (tournament_name, tournament_location,
                                tournament_date, playoff_team_count,
                                prelim_round_count)
 from cornerstone_input import (list_of_teams, playoff_bracket_names,
-                               code_team_dict, lorem)
+                               code_team_dict,
+                               qr_codes, qr_captions, lorem)
 from specific_functions import (get_team_list,
                                 get_room_list,
                                 specific_team_scheduler,
@@ -174,9 +175,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(lorem)
 
         doc.append(VerticalSpace('30pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+        qr_codes_1 = qr_codes[4:7]
+        qr_captions_1 = qr_captions[4:7]
+        qr_code(doc, qr_codes_1, qr_captions_1)
 
         doc.append(NewPage())
 
@@ -239,10 +240,10 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         # for eventual text input
         doc.append(lorem[1:701])
 
-        doc.append(VerticalSpace('140pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+        doc.append(VerticalSpace('40pt'))
+        qr_codes_2 = qr_codes[3:6]
+        qr_captions_2 = qr_captions[3:6]
+        qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 
