@@ -7,11 +7,12 @@ from pathlib import Path
 from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      NewPage, PageStyle, LargeText, HugeText,
                      LineBreak, LongTable, MultiColumn,
-                     MultiRow, VerticalSpace)
+                     MultiRow, VerticalSpace, NewLine)
 from pylatex.utils import NoEscape
 from cornerstone_input import (list_of_teams,
                                code_team_dict,
-                               qr_codes, qr_captions, lorem)
+                               qr_codes, qr_captions,
+                               texts)
 
 from prelim_scheduler import (full_schedule_grid,
                               prelim_group_names)
@@ -165,9 +166,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(LineBreak())
 
         # for eventual text input
-        doc.append(lorem)
-
+        doc.append(texts[0])
         doc.append(VerticalSpace('30pt'))
+        doc.append(NewLine())
 
         qr_codes_1 = qr_codes[0:3]
         qr_captions_1 = qr_captions[0:3]
@@ -226,9 +227,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(VerticalSpace('8pt'))
 
         # for eventual text input
-        doc.append(lorem[1:701])
-
-        doc.append(VerticalSpace('40pt'))
+        doc.append(texts[1])
+        doc.append(VerticalSpace('30pt'))
+        doc.append(NewLine())
         qr_codes_2 = qr_codes[3:6]
         qr_captions_2 = qr_captions[3:6]
         qr_code(doc, qr_codes_2, qr_captions_2)

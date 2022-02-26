@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
-
-from cornerstone_input import (prelim_group_names,
+import sys
+from cornerstone_input import (list_of_teams,
+                               prelim_group_names,
                                prelim_room_dict,
                                prelim_teamcode_dict)
 from standard_scheduler import standard_schedule
@@ -24,6 +25,8 @@ print('\n', header)
 print('start time: %s Eastern Time' % time.ctime())
 
 full_schedule_grid = []
+
+# %% creation of full schedule grid
 
 # perform this process for each prelim group, add to full_schedule_grid
 for group_name in prelim_group_names:

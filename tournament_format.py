@@ -21,7 +21,7 @@ print('start time: %s Eastern Time' % time.ctime())
 # input section for tournament format
 # =============================================================================
 
-tournament_format = "./inputs/tournament_format"
+tournament_format = "./inputs/master_templates/30/tournament_format"
 
 df = pd.read_excel(f'{tournament_format}.xlsx')
 
@@ -67,6 +67,10 @@ for i in format_list:
 
     if i[2] == 'sunday_round_count':
         sunday_round_count = i[1]
+
+    if i[2] == 'qr_toggle':
+        qr_toggle = i[1]
+        print(qr_toggle)
 
 # prints runtime
 print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
