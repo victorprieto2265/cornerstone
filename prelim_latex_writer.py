@@ -3,18 +3,19 @@
 
 # %% import section
 import time
-from pathlib import Path
 from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      NewPage, PageStyle, LargeText, HugeText,
                      LineBreak, LongTable, MultiColumn,
                      MultiRow, VerticalSpace, NewLine)
 from pylatex.utils import NoEscape
-from cornerstone_input import (list_of_teams,
-                               code_team_dict,
+from cornerstone_input import (start_time,
+                               list_of_teams,
+                               qr_toggle, text_toggle,
                                qr_codes, qr_captions,
                                texts)
 
 from prelim_scheduler import (full_schedule_grid,
+                              code_team_dict,
                               prelim_group_names)
 from function_definitions import (prelim_team, start_latex, close_latex,
                                   header_stringify, alternating_rows,
@@ -47,9 +48,12 @@ brackets? Not a big deal for rooms but definitely helpful for teams.
 """
 
 # starts program runtime
-start_time = time.time()
 print('\n', header, '\n')
 print('start time: %s Eastern Time' % time.ctime())
+
+# %% check if outputs folder exists, if not then create it
+
+# TODO write this, which will enable deleting folder before each test
 
 # %% create team index
 
@@ -150,7 +154,8 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         schedule = specific_team_scheduler(team,
                                            basic_schedule_grid,
-                                           room_list)
+                                           room_list,
+                                           code_team_dict)
 
         width = r"\textwidth"
         with doc.create(Tabularx('|c|Y|Y|',
@@ -165,14 +170,15 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(VerticalSpace('8pt'))
         doc.append(LineBreak())
 
-        # for eventual text input
-        doc.append(texts[0])
-        doc.append(VerticalSpace('30pt'))
-        doc.append(NewLine())
+        if text_toggle is True:
+            doc.append(texts[0])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
 
-        qr_codes_1 = qr_codes[0:3]
-        qr_captions_1 = qr_captions[0:3]
-        qr_code(doc, qr_codes_1, qr_captions_1)
+        if qr_toggle is True:
+            qr_codes_1 = qr_codes[0:3]
+            qr_captions_1 = qr_captions[0:3]
+            qr_code(doc, qr_codes_1, qr_captions_1)
 
         doc.append(NewPage())
 
@@ -199,11 +205,12 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         schedule = specific_room_scheduler(room,
                                            schedule_grid,
-                                           room_list)
+                                           room_list,
+                                           code_team_dict)
 
         # put room name above room-specific schedule
         doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('Room Specific Prelim Schedule'))
+        doc.append(HugeText('Individual Room Schedule'))
         doc.append(VerticalSpace('8pt'))
         doc.append(LineBreak())
         doc.append(LargeText(f'Bracket - {bracket}'))
@@ -226,13 +233,15 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         doc.append(VerticalSpace('8pt'))
 
-        # for eventual text input
-        doc.append(texts[1])
-        doc.append(VerticalSpace('30pt'))
-        doc.append(NewLine())
-        qr_codes_2 = qr_codes[3:6]
-        qr_captions_2 = qr_captions[3:6]
-        qr_code(doc, qr_codes_2, qr_captions_2)
+        if text_toggle is True:
+            doc.append(texts[1])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
+
+        if qr_toggle is True:
+            qr_codes_2 = qr_codes[3:6]
+            qr_captions_2 = qr_captions[3:6]
+            qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 

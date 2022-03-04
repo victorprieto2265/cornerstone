@@ -85,8 +85,8 @@ def analyze_input(sheet_name, df_dict):
 # step 0 = identify which excel files to pull? (not implemented while testing)
 print('\n***\nAre you uploading excel sheets for prelim schedule creation'
       + ' or rebracketing for playoffs?')
-tournament_phase = input('   enter "prelim" or "playoff" => ')
-tournament_phase = 'prelim'  # TODO delete this line after testing
+# tournament_phase = input('   enter "prelim" or "playoff" => ')
+tournament_phase = 'playoff'  # TODO delete this line, uncomment above line
 
 while tournament_phase not in ['prelim', 'playoff']:
     print('\n***incorrect input provided, please retry***')
@@ -104,7 +104,6 @@ try:
     df_dict_prelim = pd.read_excel(data_input_location,
                                    sheet_name=sheet_names)
     list_of_teams = analyze_input('list of teams', df_dict_prelim)
-    prelim_group_names = analyze_input('group names', df_dict_prelim)
     room_assignments = analyze_input('room assignments', df_dict_prelim)
     qr_codelist = analyze_input('QR codes', df_dict_prelim)
     textlist = analyze_input('text input', df_dict_prelim)
@@ -115,42 +114,54 @@ except FileNotFoundError:
 
     sys.exit()
 
+if tournament_phase == 'prelim':
+    prelim_group_names = analyze_input('group names', df_dict_prelim)
+elif tournament_phase == 'playoff':
+    rows = analyze_input('group names', df_dict_prelim)
+    prelim_group_names = [row[0] for row in rows]
+    playoff_bracket_names = [row[1] for row in rows]
+
+print(prelim_group_names)
+print(playoff_bracket_names)
+
 format_dict = {}
 for row in tournament_format:
     key = row[0]  # item, e.g. "tournament name"
     value = row[1]  # input, e.g. "2022 NSC"
     format_dict[key] = value
 
-# step 3 = execute one of two scripts depending on tournament phase:
-    # prelim input or playoff input
-    # pass data back to cornerstone_input
-
 # %% text and qr input section
 
-print(format_dict)
-
 if format_dict['QR codes'] == 'Y':
+    qr_toggle = True
 
     qr_names = [code[0] for code in qr_codelist]
     qr_codes = [NoEscape(' \\qrcode[height=1in]{' + code[1] + '} ')
                 for code in qr_codelist]
     qr_captions = [code[2] for code in qr_codelist]
-    
 
-if format_dict['Text'] == 'Y':
+else:
+    qr_toggle = False
+    qr_codes = False
+    qr_captions = False
+
+if format_dict['text'] == 'Y':
+    text_toggle = True
     texts = [text[1] for text in textlist]
-    
+
     # lorem text, delete later
     lorem = '''
-    
-    Lorem ipsum dolor sit amet. Sed iusto reprehenderit ut quis voluptas ea Quis assumenda ut eius magni eum voluptate modi? Id unde libero ad pariatur sunt eos nisi possimus est omnis nisi ut internos laboriosam. Sit nesciunt ducimus et totam maxime est voluptas vero sed itaque nihil. Et expedita culpa et fuga sunt quo esse ipsam eos doloribus autem rem perferendis modi et molestiae vitae.
-    
-    Sed cumque odio eum temporibus deleniti ad consequatur consequatur aut molestias maiores. Est doloribus tenetur est dolorem ducimus sit quasi provident. Est facere expedita non expedita molestiae non error magnam vel obcaecati debitis et blanditiis reiciendis est cupiditate voluptatem ea soluta consequatur. Qui tempore ipsam eos asperiores aliquid ex unde velit est repellendus temporibus hic quidem assumenda!
-    
-    Non autem maiores aut reprehenderit nulla sit repellendus dolore ut illum incidunt ut dignissimos eaque! Ex aperiam minima eos quis dolor id consequatur eligendi ut culpa galisum. Non fugiat corporis vel doloremque dignissimos sit vero quasi sed voluptatem explicabo.
-    
-    '''    
 
+    Lorem ipsum dolor sit amet. Sed iusto reprehenderit ut quis voluptas ea Quis assumenda ut eius magni eum voluptate modi? Id unde libero ad pariatur sunt eos nisi possimus est omnis nisi ut internos laboriosam. Sit nesciunt ducimus et totam maxime est voluptas vero sed itaque nihil. Et expedita culpa et fuga sunt quo esse ipsam eos doloribus autem rem perferendis modi et molestiae vitae.
+
+    Sed cumque odio eum temporibus deleniti ad consequatur consequatur aut molestias maiores. Est doloribus tenetur est dolorem ducimus sit quasi provident. Est facere expedita non expedita molestiae non error magnam vel obcaecati debitis et blanditiis reiciendis est cupiditate voluptatem ea soluta consequatur. Qui tempore ipsam eos asperiores aliquid ex unde velit est repellendus temporibus hic quidem assumenda!
+
+    Non autem maiores aut reprehenderit nulla sit repellendus dolore ut illum incidunt ut dignissimos eaque! Ex aperiam minima eos quis dolor id consequatur eligendi ut culpa galisum. Non fugiat corporis vel doloremque dignissimos sit vero quasi sed voluptatem explicabo.
+
+    '''
+else:
+    text_toggle = False
+    texts = False
 
 # %% excel import section MAY BE DEFUNCT
 
@@ -211,14 +222,23 @@ error_check([sublist[2] for sublist in list_of_teams],
             max_length=15,
             max_duplicates=8)
 
-prelim_group_names = [' '.join(strings) for strings in prelim_group_names]
-error_check(prelim_group_names,
-            'the groups in prelim_group_names',
-            max_length=12)
+try:
+    error_check(prelim_group_names,
+                'the groups in prelim_group_names',
+                max_length=15)
+except:  # TODO bare except
+    None
+
+try:
+    error_check(playoff_bracket_names,
+                'the brackets in playoff_bracket_names',
+                max_length=15)
+except:  # TODO bare except
+    None
 
 error_check([sublist[0] for sublist in room_assignments],
             'the list of rooms in room_assignments',
-            max_length=14)
+            max_length=15)
 
 # script does not require playoff or super information to be present
 # try:
@@ -257,24 +277,24 @@ list_of_teams.sort(key=lambda x: x[0])
 
 # %% dictionary creation
 
-# key is a prelim group name and a seed (i.e. Belmopan6)
-# value is the corresponding team (i.e. Great Valley A for Belmopan6)
-# also created a dictionary where values are team codes (i.e. GVA)
-prelim_team_dict = {}
-prelim_teamcode_dict = {}
-team_group_dict = {}
-teamcode_group_dict = {}
-for i in list_of_teams:
-    key = i[2] + str(i[3])
-    value = i[0]  # team name
-    prelim_team_dict[key] = value
-    # also created dictionary where k/v pairs are swapped
-    team_group_dict[value] = key
+# # key is a prelim group name and a seed (i.e. Belmopan6)
+# # value is the corresponding team (i.e. Great Valley A for Belmopan6)
+# # also created a dictionary where values are team codes (i.e. GVA)
+# prelim_team_dict = {}
+# prelim_teamcode_dict = {}
+# team_group_dict = {}
+# teamcode_group_dict = {}
+# for i in list_of_teams:
+#     key = i[2] + str(i[3])
+#     value = i[0]  # team name
+#     prelim_team_dict[key] = value
+#     # also created dictionary where k/v pairs are swapped
+#     team_group_dict[value] = key
 
-    value = i[1]  # team code
-    prelim_teamcode_dict[key] = value
-    # also created dictionary where k/v pairs are swapped
-    teamcode_group_dict[value] = key
+#     value = i[1]  # team code
+#     prelim_teamcode_dict[key] = value
+#     # also created dictionary where k/v pairs are swapped
+#     teamcode_group_dict[value] = key
 
 # key is team name
 # value is team code
@@ -285,7 +305,6 @@ for team in list_of_teams:
     team_name = team[0]
     team_code = team[1]
     team_code_dict[team_name] = team_code
-    code_team_dict[team_code] = team_name
 
 # key is prelim group and a number (i.e. Accra1)
 # value is corresponding room (i.e. Grand Ballroom A is Accra1)
@@ -294,16 +313,15 @@ prelim_room_dict = {}
 playoff_room_dict = {}
 super_room_dict = {}
 for i in room_assignments:
+    print(i)
     key = i[1] + str(i[2])
     value = i[0]
-    prelim_room_dict[key] = value
-    try:
-        key = i[3] + str(i[4])
+    if tournament_phase == 'prelim':
+        prelim_room_dict[key] = value
+    elif tournament_phase == 'playoff':
         playoff_room_dict[key] = value
-        key = i[5] + str(i[6])
+    elif tournament_phase == 'super':
         super_room_dict[key] = value
-    except IndexError:
-        continue
 
 # %% error catching
 

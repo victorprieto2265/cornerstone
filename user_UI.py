@@ -59,11 +59,6 @@ input_dict['32'] = ('one option', '\nFour prelim groups of 8 into eight playoff 
 
 # %% prelim schedule format logic
 
-print(input_dict['28'][1])
-print(input_dict['29'][1])
-print(input_dict['30'][1])
-
-
 # a function to execute if program_status == 'prelim'
 print('\n***\nHow many teams are competing in the tournament?\n')
 team_count = input('   enter number of teams (digits only) => ')
@@ -89,12 +84,11 @@ if os.path.exists(destination) is True:
     exit_status = input('   enter "Y" to overwrite, or press enter to exit => ')
     if exit_status not in ['Y', 'y']:
         print('\n***\n\nExiting script...\n')
-        sys.exit()
-    print('\n***\n\nOverwriting existing file...\n')
-    
-shutil.copyfile(source, destination)
-
-
+    else:
+        print('\n***\n\nOverwriting existing file...\n')
+        shutil.copyfile(source, destination)
+else:
+    shutil.copyfile(source, destination)
 
 # %% end runtime
 

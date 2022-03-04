@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import time
 import os
-from cornerstone_input import code_team_dict
 from pylatex import NoEscape
 
 scriptname = os.path.basename(__file__)
@@ -21,12 +20,6 @@ TODO account for byes in the schedule grid
 @author: Victor Prieto
 
 """
-
-# starts program runtime
-start_time = time.time()
-print('\n', description)
-print('start time: %s' % time.ctime())
-
 
 # %% getteamlist, getroomlist, find opponent, find room functions
 
@@ -47,22 +40,22 @@ def get_room_list(schedule_grid):
 
 # TODO this function is the key point of detection for byes!
 # consider checking if last element in room_list is a bye
-def find_opponent(team, row, room_list):
+def find_opponent(team, row, room_list, code_dict):
     index = row.index(team)
     room = room_list[index]
     if index % 2 == 0:
         opponent_code = row[index+1]
     else:
         opponent_code = row[index-1]
-    opponent = code_team_dict[opponent_code]
+    opponent = code_dict[opponent_code]
     return room, opponent
 
 
 # what teams are in a room at a given round?
-def find_teams(row, room, roomlist):
+def find_teams(row, room, roomlist, code_dict):
     index = roomlist.index(room)
     teams = row[2*index:2*index+2]
-    teams = [*map(code_team_dict.get, teams)]
+    teams = [*map(code_dict.get, teams)]
     return sorted(teams)  # alphabetically sorts teams
 
 
@@ -78,7 +71,8 @@ def clean_up_grid(schedule_grid):
 # %% specific schedulers
 
 
-def specific_team_scheduler(team, schedule_grid, room_list, round_start=1):
+def specific_team_scheduler(team, schedule_grid, room_list, code_dict,
+                            round_start=1):
     # generate room_list with duplicated values
     # need this for finding an opponent at a particular index
     dup_room_list = [room for room in room_list for _ in (0, 1)]
@@ -93,7 +87,8 @@ def specific_team_scheduler(team, schedule_grid, room_list, round_start=1):
     for i in range(0, rounds):
         room, opponent = find_opponent(team,
                                        schedule_grid[i],
-                                       dup_room_list)
+                                       dup_room_list,
+                                       code_dict)
 
         specific_grid.append([f'Round {round_start+i}', room, opponent])
 
@@ -107,11 +102,11 @@ def specific_team_scheduler(team, schedule_grid, room_list, round_start=1):
     return specific_grid
 
 
-def specific_room_scheduler(room, schedule_grid, room_list, round_start=1):
+def specific_room_scheduler(room, schedule_grid, room_list, code_dict, round_start=1):
     basic_schedule_grid = clean_up_grid(schedule_grid)
     specific_grid = [['', 'Team 1', 'Team 2']]
     for index, row in enumerate(basic_schedule_grid):
-        teams = find_teams(row, room, room_list)
+        teams = find_teams(row, room, room_list, code_dict)
         specific_grid.append([f'Round {round_start+index}',
                               teams[0], teams[1]])
         
@@ -119,8 +114,3 @@ def specific_room_scheduler(room, schedule_grid, room_list, round_start=1):
     
     return specific_grid
 
-
-# %% prints runtime
-print('end time: %s' % time.ctime())
-print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
-print("--- %s minutes ---" % '%.3f' % (time.time()/60 - start_time/60))

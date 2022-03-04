@@ -7,9 +7,7 @@ from pylatex import (Document, Tabularx, Command,
                      NewPage, HugeText, Package,
                      VerticalSpace)
 from pylatex.utils import NoEscape
-from tournament_format import (tournament_name, tournament_location,
-                               tournament_date)
-
+from cornerstone_input import format_dict
 
 # place additional modules here
 
@@ -140,9 +138,9 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
         doc.append(Command('fontsize', arguments=['12', '12']))
         doc.append(Command('selectfont'))
 
-    doc.preamble.append(Command('title', tournament_name))
-    doc.preamble.append(Command('author', tournament_location))
-    doc.preamble.append(Command('date', tournament_date))
+    doc.preamble.append(Command('title', format_dict['tournament name']))
+    doc.preamble.append(Command('author', format_dict['tournament location']))
+    doc.preamble.append(Command('date', format_dict['tournament date']))
     
     doc.packages.append(Package('qrcode'))  # add qrcode to packages
 
@@ -212,22 +210,6 @@ class playoff_team():
         self.prelim_group = prelim_group
         self.playoff_bracket = playoff_bracket
         self.playoff_seed = playoff_seed
-
-
-# %% class inheritance examples
-team1 = prelim_team('Manheim Township', 'MTA', 'A', 1)
-team2 = prelim_team('Great Valley', 'GVA', 'A', 2)
-team3 = prelim_team('State College', 'SCA', 'B', 1)
-team4 = prelim_team('State College B', 'SCB', 'B', 2)
-
-print(team3.code)
-
-team5 = playoff_team(team1.name, team1.code, team1.prelim_group, 'Accra', 1)
-team6 = playoff_team(team3.name, team3.code, team3.prelim_group, 'Accra', 2)
-team7 = playoff_team(team2.name, team2.code, team2.prelim_group, 'Belmopan', 1)
-team8 = playoff_team(team4.name, team4.code, team4.prelim_group, 'Belmopan', 2)
-
-print(team8.playoff_seed)
 
 # %% more function definitions
 
