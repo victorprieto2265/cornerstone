@@ -55,6 +55,12 @@ print('start time: %s Eastern Time' % time.ctime())
 
 # TODO write this, which will enable deleting folder before each test
 
+# TODO this alphabetizer may be key for outputting team-specific schedules
+# in alphabetical order, much better for printing organization
+
+# alphabetizes list of teams
+# list_of_teams.sort(key=lambda x: x[0])
+
 # %% create team index
 
 filename = 'prelim_team_index'
@@ -65,7 +71,7 @@ doc = start_latex(filename, docname)
 doc.append(NoEscape(r'\rowcolors{3}{gray!15}{white}'))
 
 alternating_rows(doc, 'gray!15')
-with doc.create(LongTable('|ll|l|')) as table:
+with doc.create(LongTable('|ll|c|')) as table:
     table.append(NoEscape(r'\rowcolor{gray!30}'))
     head_foot_row = (r'\textbf{Team Name} & \textbf{Code}'
                      + r'&\textbf{Prelim Group}\\')
@@ -126,8 +132,8 @@ doc = close_latex(filename, doc)
 
 # %% create team-specific schedules
 
-filename = 'prelim_team_specific_schedules'
-docname = 'Prelim Schedules - Team Specific'
+filename = 'prelim_individual_team_schedules'
+docname = 'Prelims - Individual Team Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
@@ -147,10 +153,11 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         doc.append(NoEscape(r'\begin{center}'))
         doc.append(HugeText(team_name))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('12pt'))
         doc.append(LineBreak())
         doc.append(LargeText(f'Prelim Group - {group}'))
         doc.append(NoEscape(r'\end{center}'))
+        doc.append(VerticalSpace('4pt'))
 
         schedule = specific_team_scheduler(team,
                                            basic_schedule_grid,
@@ -167,13 +174,16 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
             table.add_hline()
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
 
         if text_toggle is True:
+            doc.append(VerticalSpace('30pt'))
+            doc.append(LineBreak())
             doc.append(texts[0])
             doc.append(VerticalSpace('30pt'))
             doc.append(NewLine())
+        else:
+            doc.append(VerticalSpace('80pt'))  # TODO verify this works
+            doc.append(LineBreak())
 
         if qr_toggle is True:
             qr_codes_1 = qr_codes[0:3]
@@ -186,13 +196,13 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-filename = 'prelim_room_specific_schedules'
-docname = 'Prelim Schedules - Room Specific'
+filename = 'prelim_individual_room_schedules'
+docname = 'Prelims - Individual Room Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
 
-    bracket = prelim_group_names[index]
+    group = prelim_group_names[index]
 
     room_list = get_room_list(schedule_grid)
     # FIXME do these two lines still apply for odd rounds? prob not.
@@ -203,6 +213,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     # iterate for each room in roomlist
     for room in room_list:
 
+        if room == 'BYE':
+            continue
+
         schedule = specific_room_scheduler(room,
                                            schedule_grid,
                                            room_list,
@@ -211,13 +224,11 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         # put room name above room-specific schedule
         doc.append(NoEscape(r'\begin{center}'))
         doc.append(HugeText('Individual Room Schedule'))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('16pt'))
         doc.append(LineBreak())
-        doc.append(LargeText(f'Bracket - {bracket}'))
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LargeText(f'Room - {room}'))
+        doc.append(NoEscape(r'\begin{Large}'))
+        doc.append(NoEscape(fr'Prelim Group: {group} \hfill Room: {room}'))
+        doc.append(NoEscape(r'\end{Large}'))
         doc.append(NoEscape(r'\end{center}'))
 
         alternating_rows(doc, 'gray!15')
@@ -230,8 +241,8 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
             table.add_hline()
-
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('16pt'))
+        doc.append(LineBreak())
 
         if text_toggle is True:
             doc.append(texts[1])

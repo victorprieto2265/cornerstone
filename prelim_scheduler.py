@@ -67,7 +67,6 @@ full_schedule_grid = []
 
 # perform this process for each prelim group, add to full_schedule_grid
 for group_name in prelim_group_names:
-
     schedule_grid = (standard_schedule(group_name,
                                        prelim_teamcode_dict,
                                        prelim_room_dict))

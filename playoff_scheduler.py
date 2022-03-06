@@ -1,20 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
 import sys
 from cornerstone_input import (playoff_bracket_names,
                                team_code_dict,
                                playoff_room_dict,
-                                list_of_teams, 
-                                format_dict)
+                               format_dict)
 from standard_scheduler import standard_schedule
-
-from cornerstone_input import (playoff_bracket_names)
-from prelim_analysis import (sorted_list,
-                             placement_team,
-                             team_ppb)  # these might get used for repeat check
-from function_definitions import (playoff_team, snake_seed, split_list,
-                                  duplicate_checker)
+from prelim_analysis import (sorted_list)
 
 # place additional modules here
 
@@ -142,9 +134,6 @@ for index, bracket_name in enumerate(playoff_bracket_names):
 
 # %% create full schedule grid
 
-# set playoff round count to start after the number of prelim rounds
-# (e.g. Round 8 is first playoff round, not Round 1)
-
 full_schedule_grid = []
 
 # perform this process for each prelim group, add to full_schedule_grid
@@ -162,4 +151,3 @@ for bracket_name in playoff_bracket_names:
 for index, playoff_bracket in enumerate(playoff_bracket_names):
     print(f'\nPlayoff Bracket: {playoff_bracket}')
     print(*full_schedule_grid[index], sep='\n')
-

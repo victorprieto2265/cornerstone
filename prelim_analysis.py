@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
-import sys
 from cornerstone_input import list_of_teams, format_dict
 
 header = """
@@ -15,11 +13,6 @@ This script analyzes prelim stats and produces a sorted list of teams by:
 @author: Victor Prieto
 
 """
-
-# starts program runtime
-start_time = time.time()
-print('\n', header)
-print('start time: %s' % time.ctime())
 
 
 def by_value(item):
@@ -40,6 +33,7 @@ advance_count = format_dict['the number of teams that advance to each bracket'
 # %% reorganization attempt 5
 
 # sort list by index 1 descending, index 2 ascending
+print(*list_of_teams, sep='\n')
 sorted_list = sorted(list_of_teams, key=lambda x: (x[3], -x[4]))
 print(*sorted_list, sep='\n')
 
@@ -157,7 +151,3 @@ print(*sorted_list, sep='\n')
 print('\n\n*** sorted_list ***\n\n')
 print(*sorted_list[0:20], sep='\n')
 print('continued...')
-
-# prints runtime
-print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
-print("--- %s minutes ---" % '%.3f' % (time.time()/60 - start_time/60))

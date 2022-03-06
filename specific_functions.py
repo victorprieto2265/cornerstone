@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
 import os
 from pylatex import NoEscape
 
@@ -14,8 +13,6 @@ Created on Tue Nov 16 17:11:20 2021
 
 This script defines a few functions needed for specific_latex_writer.py,
 which outputs schedules specific to teams and rooms.
-
-TODO account for byes in the schedule grid
 
 @author: Victor Prieto
 
@@ -35,19 +32,23 @@ def get_room_list(schedule_grid):
     # remove first element in header, which should be a gray box
     header = schedule_grid[0][1:]
     room_list = [i[0] for i in header]
+    if 'BYE' in header:
+        room_list[-1] = 'BYE'
     return room_list
 
 
-# TODO this function is the key point of detection for byes!
-# consider checking if last element in room_list is a bye
+# for a given team in a given round, what team do they play and where?
 def find_opponent(team, row, room_list, code_dict):
     index = row.index(team)
     room = room_list[index]
-    if index % 2 == 0:
+    if row[-1] == team and room_list[-1] == 'BYE':
+        opponent = 'BYE'
+    elif index % 2 == 0:
         opponent_code = row[index+1]
+        opponent = code_dict[opponent_code]
     else:
         opponent_code = row[index-1]
-    opponent = code_dict[opponent_code]
+        opponent = code_dict[opponent_code]
     return room, opponent
 
 
@@ -80,9 +81,6 @@ def specific_team_scheduler(team, schedule_grid, room_list, code_dict,
     # how many rounds in the grid?
     rounds = len(schedule_grid)
 
-    # how many teams in the group/bracket?
-    teams = len(schedule_grid[1])
-
     specific_grid = [['', 'Room Name', 'Opponent']]
     for i in range(0, rounds):
         room, opponent = find_opponent(team,
@@ -93,24 +91,26 @@ def specific_team_scheduler(team, schedule_grid, room_list, code_dict,
         specific_grid.append([f'Round {round_start+i}', room, opponent])
 
         specific_grid[0][0] = NoEscape('\\cellcolor{gray}')
-    
+
     # for visual debugging
-    # print('\n\n hello there\n\n')
     # print(*specific_grid, sep='\n')
     # print('\n\n\n\n')
 
     return specific_grid
 
 
-def specific_room_scheduler(room, schedule_grid, room_list, code_dict, round_start=1):
+def specific_room_scheduler(room, schedule_grid, room_list,
+                            code_dict, round_start=1):
     basic_schedule_grid = clean_up_grid(schedule_grid)
     specific_grid = [['', 'Team 1', 'Team 2']]
     for index, row in enumerate(basic_schedule_grid):
         teams = find_teams(row, room, room_list, code_dict)
+        if room == 'BYE':
+            return 'BYE'
         specific_grid.append([f'Round {round_start+index}',
                               teams[0], teams[1]])
-        
+
         specific_grid[0][0] = NoEscape('\\cellcolor{gray}')
-    
+
     return specific_grid
 

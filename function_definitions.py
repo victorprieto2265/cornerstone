@@ -143,6 +143,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     doc.preamble.append(Command('date', format_dict['tournament date']))
     
     doc.packages.append(Package('qrcode'))  # add qrcode to packages
+    doc.packages.append(Package('fancyhdr'))  # add qrcode to packages
 
     doc.append(NoEscape(r'\newcolumntype{Y}{>{\centering\arraybackslash}X}'))
 
@@ -154,7 +155,15 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
         doc.append(HugeText(docname))
         doc.append(NoEscape(r'\end{center}'))
         doc.append(NewPage())
-
+    
+    doc.append(NoEscape(r'\pagestyle{fancy}'))
+    doc.append(NoEscape(r'\fancyhf{}'))
+    date = '{' + format_dict['tournament date'] + '}'
+    name = '{' + format_dict['tournament name'] + '}'
+    doc.append(NoEscape(fr'\rhead{date}'))
+    doc.append(NoEscape(fr'\lhead{name}'))
+    doc.append(NoEscape(r'\rfoot{Created by PACE Cornerstone}'))
+        
     return doc
 
 

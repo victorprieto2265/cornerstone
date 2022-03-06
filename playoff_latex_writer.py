@@ -3,7 +3,6 @@
 
 # %% import section
 import time
-from pathlib import Path
 from pylatex import (Document, Section, Tabularx, Command,
                      NewPage, LineBreak, LongTable, HugeText,
                      VerticalSpace, Center, LargeText, NewLine)
@@ -12,13 +11,16 @@ from pylatex.utils import NoEscape
 from function_definitions import (start_latex, close_latex,
                                   header_stringify, playoff_team,
                                   alternating_rows, qr_code)
-from playoff_scheduler import (full_schedule_grid, playoff_teamcode_dict,
-                               teamcode_playoff_dict)
-from tournament_format import (tournament_name, tournament_location,
-                               tournament_date, playoff_team_count,
+from playoff_scheduler import (full_schedule_grid,
+                               # playoff_teamcode_dict,
+                               teamcode_playoff_dict,
                                prelim_round_count)
+# from tournament_format import (tournament_name, tournament_location,
+#                                tournament_date, playoff_team_count,
+#                                )
 from cornerstone_input import (list_of_teams, playoff_bracket_names,
                                code_team_dict,
+                               qr_toggle, text_toggle,
                                qr_codes, qr_captions,
                                texts)
 from specific_functions import (get_team_list,
@@ -26,8 +28,6 @@ from specific_functions import (get_team_list,
                                 specific_team_scheduler,
                                 specific_room_scheduler,
                                 clean_up_grid)
-import os
-import os.path
 
 # %% header, runtime
 header = r"""
@@ -124,8 +124,8 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-filename = 'playoff_team_specific_schedules'
-docname = 'Playoff Schedules - Team Specific'
+filename = 'playoff_individual_schedules'
+docname = 'Playoffs - Individual Team Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
@@ -147,14 +147,16 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         doc.append(NoEscape(r'\begin{center}'))
         doc.append(HugeText(team_name))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('12pt'))
         doc.append(LineBreak())
         doc.append(LargeText(f'Playoff Bracket - {bracket}'))
         doc.append(NoEscape(r'\end{center}'))
+        doc.append(VerticalSpace('4pt'))
 
         schedule = specific_team_scheduler(team,
                                            basic_schedule_grid,
                                            room_list,
+                                           code_team_dict,
                                            round_start=round_start)
 
         alternating_rows(doc, 'gray!15')
@@ -169,16 +171,21 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
             table.add_hline()
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
 
-        # for eventual text input
-        doc.append(texts[2])
-        doc.append(VerticalSpace('30pt'))
-        doc.append(NewLine())
-        qr_codes_1 = qr_codes[4:7]
-        qr_captions_1 = qr_captions[4:7]
-        qr_code(doc, qr_codes_1, qr_captions_1)
+        if text_toggle is True:
+            doc.append(VerticalSpace('30pt'))
+            doc.append(LineBreak())
+            doc.append(texts[0])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
+        else:
+            doc.append(VerticalSpace('80pt'))  # TODO verify this works
+            doc.append(LineBreak())
+
+        if qr_toggle is True:
+            qr_codes_1 = qr_codes[0:3]
+            qr_captions_1 = qr_captions[0:3]
+            qr_code(doc, qr_codes_1, qr_captions_1)
 
         doc.append(NewPage())
 
@@ -187,8 +194,8 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-filename = 'playoff_room_specific_schedules'
-docname = 'Playoff Schedules - Room Specific'
+filename = 'playoff_individual_room_schedules'
+docname = 'Playoffs - Individual Room Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
@@ -210,19 +217,18 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         schedule = specific_room_scheduler(room,
                                            schedule_grid,
                                            room_list,
+                                           code_team_dict,
                                            round_start=round_start)
 
         # bracket and room above room specific schedule
 
         doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('Room Specific Playoff Schedule'))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(HugeText('Individual Room Schedule'))
+        doc.append(VerticalSpace('16pt'))
         doc.append(LineBreak())
-        doc.append(LargeText(f'Bracket - {bracket}'))
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LargeText(f'Room - {room}'))
+        doc.append(NoEscape(r'\begin{Large}'))
+        doc.append(NoEscape(fr'Playoff Bracket: {bracket} \hfill Room: {room}'))
+        doc.append(NoEscape(r'\end{Large}'))
         doc.append(NoEscape(r'\end{center}'))
 
         # create table with formatting
@@ -236,15 +242,18 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
             table.add_hline()
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('16pt'))
+        doc.append(LineBreak())
 
-        # for eventual text input
-        doc.append(texts[3])
-        doc.append(VerticalSpace('30pt'))
-        doc.append(NewLine())
-        qr_codes_2 = qr_codes[3:6]
-        qr_captions_2 = qr_captions[3:6]
-        qr_code(doc, qr_codes_2, qr_captions_2)
+        if text_toggle is True:
+            doc.append(texts[1])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
+
+        if qr_toggle is True:
+            qr_codes_2 = qr_codes[3:6]
+            qr_captions_2 = qr_captions[3:6]
+            qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 

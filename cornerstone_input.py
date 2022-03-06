@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time, sys
+import time
+import sys
 import pandas as pd
 
 from pylatex import NoEscape
@@ -85,14 +86,13 @@ def analyze_input(sheet_name, df_dict):
 # step 0 = identify which excel files to pull? (not implemented while testing)
 print('\n***\nAre you uploading excel sheets for prelim schedule creation'
       + ' or rebracketing for playoffs?')
-# tournament_phase = input('   enter "prelim" or "playoff" => ')
-tournament_phase = 'playoff'  # TODO delete this line, uncomment above line
+tournament_phase = input('   enter "prelims" or "playoffs" => ')
 
-while tournament_phase not in ['prelim', 'playoff']:
+while tournament_phase not in ['prelims', 'playoffs']:
     print('\n***incorrect input provided, please retry***')
     print('\nSelect either prelim schedule creation or '
           + 'rebracketing for playoffs:')
-    tournament_phase = input('   enter "prelim" or "playoff" => ')
+    tournament_phase = input('   enter "prelims" or "playoffs" => ')
 
 # step 1 = import excel file
 data_input_location = f'./data input/{tournament_phase}_data.xlsx'
@@ -114,15 +114,12 @@ except FileNotFoundError:
 
     sys.exit()
 
-if tournament_phase == 'prelim':
+if tournament_phase == 'prelims':
     prelim_group_names = analyze_input('group names', df_dict_prelim)
-elif tournament_phase == 'playoff':
+elif tournament_phase == 'playoffs':
     rows = analyze_input('group names', df_dict_prelim)
     prelim_group_names = [row[0] for row in rows]
     playoff_bracket_names = [row[1] for row in rows]
-
-print(prelim_group_names)
-print(playoff_bracket_names)
 
 format_dict = {}
 for row in tournament_format:
@@ -130,15 +127,19 @@ for row in tournament_format:
     value = row[1]  # input, e.g. "2022 NSC"
     format_dict[key] = value
 
+# convert Excel datetime format to more suitable date string
+date = format_dict['tournament date'].strftime('%B %d, %Y')
+format_dict['tournament date'] = date
+
 # %% text and qr input section
 
 if format_dict['QR codes'] == 'Y':
     qr_toggle = True
 
     qr_names = [code[0] for code in qr_codelist]
-    qr_codes = [NoEscape(' \\qrcode[height=1in]{' + code[1] + '} ')
+    qr_codes = [NoEscape(' \\qrcode[height=1in]{' + code[2] + '} ')
                 for code in qr_codelist]
-    qr_captions = [code[2] for code in qr_codelist]
+    qr_captions = [code[3] for code in qr_codelist]
 
 else:
     qr_toggle = False
@@ -163,50 +164,6 @@ else:
     text_toggle = False
     texts = False
 
-# %% excel import section MAY BE DEFUNCT
-
-# prelim_data = "./inputs/master_templates/30/tournament_data_prelim"
-# playoff_data = "./inputs/master_templates/30/tournament_data_playoff"
-
-# try:
-#     sheet_names = ['to be filled in list of playoff sheet names']  # TODO
-#     df_dict_playoff = pd.read_excel(f'{playoff_data}.xlsx',
-#                                     sheet_name=sheet_names)
-
-# except FileNotFoundError:
-#     sheet_names = ['list of teams', 'group names', 'room assignments',
-#                     'QR codes', 'text input', 'tournament format']
-#     df_dict_prelim = pd.read_excel(f'{prelim_data}.xlsx',
-#                                     sheet_name=sheet_names)
-#     list_of_teams = analyze_input('list of teams', df_dict_prelim)
-#     prelim_group_names = analyze_input('group names', df_dict_prelim)
-#     room_assignments = analyze_input('room assignments', df_dict_prelim)
-#     qr_codelist = analyze_input('QR codes', df_dict_prelim)
-#     textlist = analyze_input('text input', df_dict_prelim)
-
-# for i in sheet_names:
-#     print(f'\n\nkey = {i}\n')
-#     print(df_dict[i])
-#     df = df_dict[i]
-#     temp_list = df.values.tolist()  # note: temp_list may be multiple lists!
-
-# file locations
-# list_of_teams = "./inputs/list_of_teams"
-# prelim_group_names = "./inputs/prelim_group_names"
-# room_assignments = "./inputs/room_assignments"
-# prelim_results = "./inputs/prelim_results"
-# playoff_bracket_names = "./inputs/playoff_bracket_names"
-# super_input = "./inputs/super_input"
-# qr_input = "./inputs/qr_input"
-# text_input = "./inputs/text_input"
-
-# TODO write separate script that reads above lists + identifies rr schedules
-# will need to import list of teams and generate prelim_round_count
-# rr_schedule = f"./rr_schedules/rr_{prelim_team_count}"
-# df3 = pd.read_excel(f'{rr_schedule}.xlsx')
-# playoff_rr_schedule_input = f"./rr_schedules/rr_{playoff_team_count}"
-# df6 = pd.read_excel(f'{playoff_bracket_names}.xlsx')
-
 # %% error catching
 
 # TODO modify max_duplicates to be flexible on schedule and not hard coded
@@ -220,7 +177,8 @@ error_check([sublist[1] for sublist in list_of_teams],
 error_check([sublist[2] for sublist in list_of_teams],
             'the prelim groups in list_of_teams',
             max_length=15,
-            max_duplicates=8)
+            # max_duplicates=8
+            )
 
 try:
     error_check(prelim_group_names,
@@ -240,61 +198,8 @@ error_check([sublist[0] for sublist in room_assignments],
             'the list of rooms in room_assignments',
             max_length=15)
 
-# script does not require playoff or super information to be present
-# try:
-#     prelim_results = analyze_input(prelim_results)
-#     error_check([sublist[0] for sublist in prelim_results],
-#                 'the team names in prelim_results',
-#                 max_length=26)
-#     error_check([sublist[1] for sublist in prelim_results],
-#                 'the brackets in prelim_results',
-#                 max_length=12,
-#                 max_duplicates=8)
-
-#     playoff_brackets = analyze_input(playoff_bracket_names)
-#     # converts list of lists to list of strings
-#     playoff_bracket_names = [' '.join(strings) for strings in playoff_brackets]
-
-#     super_input = analyze_input(super_input)
-#     error_check([sublist[0] for sublist in super_input],
-#                 'the team names in super_input',
-#                 max_length=26)
-#     error_check([sublist[1] for sublist in super_input],
-#                 'the team codes in super_input',
-#                 max_length=4)
-#     error_check([sublist[2] for sublist in super_input],
-#                 'the playoff brackets in super_input',
-#                 max_length=15,
-#                 max_duplicates=6)
-
-# except FileNotFoundError:
-#     pass
-
-# alphabetizes list of teams
-list_of_teams.sort(key=lambda x: x[0])
-
-
 
 # %% dictionary creation
-
-# # key is a prelim group name and a seed (i.e. Belmopan6)
-# # value is the corresponding team (i.e. Great Valley A for Belmopan6)
-# # also created a dictionary where values are team codes (i.e. GVA)
-# prelim_team_dict = {}
-# prelim_teamcode_dict = {}
-# team_group_dict = {}
-# teamcode_group_dict = {}
-# for i in list_of_teams:
-#     key = i[2] + str(i[3])
-#     value = i[0]  # team name
-#     prelim_team_dict[key] = value
-#     # also created dictionary where k/v pairs are swapped
-#     team_group_dict[value] = key
-
-#     value = i[1]  # team code
-#     prelim_teamcode_dict[key] = value
-#     # also created dictionary where k/v pairs are swapped
-#     teamcode_group_dict[value] = key
 
 # key is team name
 # value is team code
@@ -305,6 +210,7 @@ for team in list_of_teams:
     team_name = team[0]
     team_code = team[1]
     team_code_dict[team_name] = team_code
+    code_team_dict[team_code] = team_name
 
 # key is prelim group and a number (i.e. Accra1)
 # value is corresponding room (i.e. Grand Ballroom A is Accra1)
@@ -313,12 +219,11 @@ prelim_room_dict = {}
 playoff_room_dict = {}
 super_room_dict = {}
 for i in room_assignments:
-    print(i)
     key = i[1] + str(i[2])
     value = i[0]
-    if tournament_phase == 'prelim':
+    if tournament_phase == 'prelims':
         prelim_room_dict[key] = value
-    elif tournament_phase == 'playoff':
+    elif tournament_phase == 'playoffs':
         playoff_room_dict[key] = value
     elif tournament_phase == 'super':
         super_room_dict[key] = value
@@ -341,17 +246,3 @@ if error == 0:
 else:
     print('\n*** Errors detected during import! ***')
     # sys.exit()
-
-# TODO the above, which will cut down the number of input files by two
-'''
-
-Not sure what the above comment means, but I'm guessing it has something to
-do with reading the lists of teams, offering users a choice of tournament
-formats, and providing a bunch of variables to the rest of the program.
-
-'''
-
-# prints runtime
-print('\n\n')
-print("--- %s seconds ---" % '%.3f' % (time.time() - start_time))
-print("--- %s minutes ---" % '%.3f' % (time.time()/60 - start_time/60))
