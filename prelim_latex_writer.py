@@ -64,7 +64,10 @@ print('start time: %s Eastern Time' % time.ctime())
 # %% create team index
 
 filename = 'prelim_team_index'
-docname = 'Team Index'
+docname = 'Prelims - Team Index'
+
+# sort teams to be in alphabetical order, and not by seed
+list_of_teams = sorted(list_of_teams, key=lambda x: (x[0]))
 
 doc = start_latex(filename, docname)
 

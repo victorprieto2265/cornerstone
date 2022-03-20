@@ -96,7 +96,9 @@ while tournament_phase not in ['prelims', 'playoffs']:
 
 # step 1 = import excel file
 data_input_location = f'./data input/{tournament_phase}_data.xlsx'
-# TODO replace above with Tkinter file select
+# # TODO Tkinter file select is commented below
+# from tkinter import filedialog
+# data_input_location = filedialog.askopenfilename()
 
 try:
     sheet_names = ['list of teams', 'group names', 'room assignments',
@@ -120,6 +122,9 @@ elif tournament_phase == 'playoffs':
     rows = analyze_input('group names', df_dict_prelim)
     prelim_group_names = [row[0] for row in rows]
     playoff_bracket_names = [row[1] for row in rows]
+    playoff_bracket_names = [x for x in playoff_bracket_names
+                             if str(x) != 'nan']
+
 
 format_dict = {}
 for row in tournament_format:

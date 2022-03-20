@@ -6,15 +6,15 @@ import time
 from pylatex import (Document, Section, Tabularx, Command,
                      NewPage, LineBreak, LongTable, HugeText,
                      VerticalSpace, Center, LargeText, NewLine)
-from pylatex.utils import NoEscape
+from pylatex.utils import NoEscape, italic
 
 from function_definitions import (start_latex, close_latex,
                                   header_stringify, playoff_team,
                                   alternating_rows, qr_code)
 from playoff_scheduler import (full_schedule_grid,
-                               # playoff_teamcode_dict,
                                teamcode_playoff_dict,
-                               prelim_round_count)
+                               prelim_round_count,
+                               crossover)
 # from tournament_format import (tournament_name, tournament_location,
 #                                tournament_date, playoff_team_count,
 #                                )
@@ -48,7 +48,10 @@ print('start time: %s Eastern Time' % time.ctime())
 # %% create team index
 
 filename = 'playoff_team_index'
-docname = 'Team Index'
+docname = 'Playoffs - Team Index'
+
+# sort teams to be in alphabetical order, and not by seed
+list_of_teams = sorted(list_of_teams, key=lambda x: (x[0]))
 
 doc = start_latex(filename, docname)
 
@@ -78,11 +81,19 @@ with doc.create(LongTable('|ll|lc|l|')) as table:
     table.add_hline()
     for i in list_of_teams:
         playoff_seed = teamcode_playoff_dict[i[1]][-1]
+        prelim_finish = i[3]
         playoff_bracket = teamcode_playoff_dict[i[1]][:-1]
         team = playoff_team(i[0], i[1], i[2],
                             playoff_bracket, playoff_seed)
         table.add_row(team.name, team.code, team.prelim_group,
-                      team.playoff_seed, team.playoff_bracket)
+                      prelim_finish, team.playoff_bracket)
+
+# %% team index crossover text
+if crossover != 'N':
+    normal_text = 'Teams with an odd number in the "Prelim Finish" column begin playoffs with one win, while teams with an even number begin playoffs with one loss.'
+    italic_text = ' Exception: any team who was the only team to advance from their prelim bracket starts with no wins and no losses.'
+    doc.append(normal_text)
+    doc.append(italic(italic_text))
 
 doc = close_latex(filename, doc)
 

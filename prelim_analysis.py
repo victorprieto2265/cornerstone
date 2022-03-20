@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from cornerstone_input import list_of_teams, format_dict
+from cornerstone_input import list_of_teams, format_dict, prelim_group_names
 
 header = """
 
@@ -32,10 +32,16 @@ advance_count = format_dict['the number of teams that advance to each bracket'
 
 # %% reorganization attempt 5
 
+crossover = format_dict['crossover']
+
 # sort list by index 1 descending, index 2 ascending
-print(*list_of_teams, sep='\n')
+# print(*list_of_teams, sep='\n')
 sorted_list = sorted(list_of_teams, key=lambda x: (x[3], -x[4]))
-print(*sorted_list, sep='\n')
+if crossover != 'N':
+    # ignore PPB if using crossover schedule
+    # TODO I don't know if this is best method but it works for now
+    sorted_list = sorted(list_of_teams, key=lambda x: (x[3]))
+# print(*sorted_list, sep='\n')
 
 
 # # %% reorganization attempt 1
@@ -149,5 +155,5 @@ print(*sorted_list, sep='\n')
 
 # %% for visual debugging
 print('\n\n*** sorted_list ***\n\n')
-print(*sorted_list[0:20], sep='\n')
+print(*sorted_list[0:25], sep='\n')
 print('continued...')

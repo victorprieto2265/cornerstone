@@ -33,8 +33,7 @@ start_time = time.time()
 
 input_dict = {}
 
-input_dict['4'] = ('\nOption A: triple round-robin (9 rounds, 9 games, 2 rooms)\n'
-                   + 'Option B: quadruple round-robin (12 rounds, 12 games, 2 rooms)')
+input_dict['4'] = ('\nOption A: triple round-robin (9 rounds, 9 games, 2 rooms)\n'                   + 'Option B: quadruple round-robin (12 rounds, 12 games, 2 rooms)')
 input_dict['9'] = ('\nOption A: full round-robin (9 rounds, 8 games minimum, 4 rooms)\n'
                    + 'Option B: round-robin into top3/middle 3/bottom 3 split (12 rounds, 10 games minimum, 4 rooms)\n'
                    + 'Option C: round-robin into top 5/bottom 4 split (14 rounds, 11 games minimum, 4 rooms)')
@@ -47,12 +46,13 @@ input_dict['12'] = ('\nOption A: two prelim groups of 6 into two playoff bracket
 input_dict['24'] = ('\nOption A: four prelim groups of 6 into six playoff brackets of 4, with two parallel top brackets (8 rounds, 8 games, 12 rooms)\n'
                    + 'Option B: three prelim groups of 8 into four playoff brackets of 6 (11 rounds, 11 games, 12 rooms)\n'
                    + 'Option C: four prelim groups of 6 into three playoff brackets of 8 (11 rounds, 11 games, 12 rooms)\n'
-                   + 'Option D: three prelim groups of 8 with byes into four playoff brackets of 6 (12 rounds, 11+ games, 12 rooms')
+                   + 'Option D: three prelim groups of 8 with byes into four playoff brackets of 6 (12 rounds, 11+ games, 12 rooms'
+                   + 'Option E: 6 by 5 into 6 by 5')  # TODO update this
 
 input_dict['25'] = ('one option', '\nFive prelim groups of 5 into five playoff groups of 5, with two parallel top brackets of 5 (10 rounds, 8 games, 10 rooms)\n')
 input_dict['26'] = ('one option', '\n Four prelim groups of 5 and one prelim group of 6 into four playoff brackets of 5 and one playoff bracket of 6, with two parallel top brackets (10 rounds, 8+ games, 11 prelim rooms, 11 playoff rooms)')
-input_dict['27'] = ('one option', '\nFour prelim groups of 7 into seven playoff brackets of 4, with two parallel top brackets (10 rounds, 9+ games, 12 prelim rooms, 14 playoff rooms)')
-input_dict['28'] = ('one option', '\nTwo prelim groups of 6 and three prelim groups of 5 into two playoff brackets of 6 and three playoff brackets of 5, with two parallel top brackets (10 rounds, 8+ games, 12 rooms)')
+input_dict['27'] = ('one option', '\nTwo prelim groups of 6 and three prelim groups of 5 into two playoff brackets of 6 and three playoff brackets of 5, with two parallel top brackets (10 rounds, 8+ games, 12 rooms)')
+input_dict['28'] = ('one option', '\nFour prelim groups of 7 into seven playoff brackets of 4, with two parallel top brackets (10 rounds, 9+ games, 12 prelim rooms, 14 playoff rooms)')
 input_dict['29'] = ('one option', '\nFour prelim groups of 6 and one prelim group of 5 into four playoff brackets of 6 and one playoff bracket of 5, with two parallel top brackets (10 rounds, 9+ games, 14 rooms)')
 
 input_dict['30'] = ('one option', '\nFive prelim groups of 6 into five playoff brackets of 6, with two parallel top brackets (10 rounds, 10 games, 15 rooms)')

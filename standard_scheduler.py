@@ -72,14 +72,13 @@ def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1,
     # identify correct rr_schedule and import template
     rr_schedule = f"./rr_schedules/rr_{teamcount}"
     if crossover is not False:
-        print(f'use crossover schedule {crossover}{teamcount}')
-        rr_schedule = f"./rr_schedules/rr_crossover{crossover}{teamcount}"
+        rr_schedule = f"./rr_schedules/rr_crossover_{crossover}{teamcount}"
 
     try:
         rr_schedule = pd.read_excel(f'{rr_schedule}.xlsx').values.tolist()
     except FileNotFoundError:
-        print('*** WARNING ***\nThere may be too many names '
-              + 'of prelim groups or playoff brackets.')
+        print('*** WARNING ***\nNo file found for rr_schedule... '
+              + 'Or, too many prelim groups or playoff brackets.')
         sys.exit()
 
     # produce roomlist

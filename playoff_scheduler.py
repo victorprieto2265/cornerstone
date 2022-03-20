@@ -7,6 +7,7 @@ from cornerstone_input import (playoff_bracket_names,
                                format_dict)
 from standard_scheduler import standard_schedule
 from prelim_analysis import (sorted_list)
+import math
 
 # place additional modules here
 
@@ -54,6 +55,10 @@ sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
 prelim_round_count = format_dict['number of prelim rounds '
                                  + '(do not include tiebreakers)']
 
+crossover = format_dict['crossover']
+if crossover == 'N':
+    crossover = False
+
 # %% old code
 # # %% generate new list of teams, divided by playoff bracket
 
@@ -98,10 +103,11 @@ prelim_round_count = format_dict['number of prelim rounds '
 playoff_team_dict = {}
 playoff_teamcode_dict = {}
 teamcode_playoff_dict = {}
+
 for index, bracket_name in enumerate(playoff_bracket_names):
 
-    # visual debugging
-    print(f'\n\nbracket_name = {bracket_name}')
+    # # visual debugging
+    # print(f'\n\nbracket_name = {bracket_name}')
 
     for index2, team in enumerate(sorted_list[index]):
 
@@ -109,9 +115,9 @@ for index, bracket_name in enumerate(playoff_bracket_names):
         value = team[0]
         playoff_team_dict[key] = value
 
-        # visual debugging
-        print(f'team = {team}')
-        print(f'key = {key} \nvalue = {value}\n')
+        # # visual debugging
+        # print(f'team = {team}')
+        # print(f'key = {key} \nvalue = {value}\n')
 
         value = team_code_dict[value]
         playoff_teamcode_dict[key] = value
@@ -143,11 +149,12 @@ for bracket_name in playoff_bracket_names:
     schedule_grid = (standard_schedule(bracket_name,
                                        playoff_teamcode_dict,
                                        playoff_room_dict,
+                                       crossover=crossover,
                                        roundstart=prelim_round_count+1))
 
     full_schedule_grid.append(schedule_grid)
 
-# prints output for visual debugging
-for index, playoff_bracket in enumerate(playoff_bracket_names):
-    print(f'\nPlayoff Bracket: {playoff_bracket}')
-    print(*full_schedule_grid[index], sep='\n')
+# # prints output for visual debugging
+# for index, playoff_bracket in enumerate(playoff_bracket_names):
+#     print(f'\nPlayoff Bracket: {playoff_bracket}')
+#     print(*full_schedule_grid[index], sep='\n')
