@@ -6,7 +6,7 @@ from cornerstone_input import (playoff_bracket_names,
                                playoff_room_dict,
                                format_dict)
 from standard_scheduler import standard_schedule
-from prelim_analysis import (sorted_list)
+from prelim_analysis import sorted_list
 import math
 
 # place additional modules here
@@ -58,42 +58,6 @@ prelim_round_count = format_dict['number of prelim rounds '
 crossover = format_dict['crossover']
 if crossover == 'N':
     crossover = False
-
-# %% old code
-# # %% generate new list of teams, divided by playoff bracket
-
-# # TODO what do we do about tier counts greater than 1?
-# tier_count = 1
-# playoff_group_count = format_dict['number of teams per playoff bracket']
-
-# # split sorted_list into several tiers
-# # for non-NSC tournaments this will almost certainly be one tier
-# split_sorted_list = split_list(sorted_list, tier_count)
-
-# for tier in split_sorted_list:
-#     seeded_list = snake_seed(tier, playoff_group_count/tier_count)
-
-# # snake seed brackets, yielding seeded_bracket_list (of brackets)
-# seeded_team_list = []
-# for tier in split_sorted_list:
-#     seeded_list = snake_seed(tier, int(playoff_group_count/tier_count))
-#     for j in seeded_list:
-#         seeded_team_list.append(j)
-
-# # split the above list by number of playoff brackets, creating list of lists
-# list_of_teams = split_list(seeded_team_list, playoff_group_count)
-
-# # %% repeat checker (checks to see if two teams ended up in same bracket?)
-
-# print('\n')
-# for index, bracket_name in enumerate(playoff_bracket_names):
-#     list_of_groups = list((i[1] for i in list_of_teams[index]))
-#     print(f'Prelim groups advancing to playoff bracket {bracket_name}:')
-#     print(list_of_groups)
-#     result = duplicate_checker(list_of_groups)
-#     print(f'Duplicates in {bracket_name}: {result}\n')
-# print('\n')
-
 
 # %% generate playoff seed / team dictionary
 

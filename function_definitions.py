@@ -168,7 +168,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
 
 
 def close_latex(filename_input, doc_input):
-    file_path = r'./outputs/'
+    file_path = r'./output/'
     filename = file_path + filename_input
     doc_input.generate_tex()
 

@@ -101,11 +101,13 @@ data_input_location = f'./data input/{tournament_phase}_data.xlsx'
 # data_input_location = filedialog.askopenfilename()
 
 try:
-    sheet_names = ['list of teams', 'group names', 'room assignments',
-                   'QR codes', 'text input', 'tournament format']
+    sheet_names = ['tournament format', 'list of teams', 'team codes',
+                   'group names', 'room assignments',
+                   'QR codes', 'text input']
     df_dict_prelim = pd.read_excel(data_input_location,
                                    sheet_name=sheet_names)
     list_of_teams = analyze_input('list of teams', df_dict_prelim)
+    team_codes = analyze_input('team codes', df_dict_prelim)
     room_assignments = analyze_input('room assignments', df_dict_prelim)
     qr_codelist = analyze_input('QR codes', df_dict_prelim)
     textlist = analyze_input('text input', df_dict_prelim)
@@ -133,6 +135,7 @@ for row in tournament_format:
     format_dict[key] = value
 
 # convert Excel datetime format to more suitable date string
+print(format_dict['tournament date'])
 date = format_dict['tournament date'].strftime('%B %d, %Y')
 format_dict['tournament date'] = date
 
@@ -172,18 +175,20 @@ else:
 # %% error catching
 
 # TODO modify max_duplicates to be flexible on schedule and not hard coded
+# or perhaps get rid of max duplicates since it doesn't make a lot of sense
 # error check imported lists/sublists
 error_check([sublist[0] for sublist in list_of_teams],
             'the team names in list_of_teams',
             max_length=26)
-error_check([sublist[1] for sublist in list_of_teams],
-            'the team codes in list_of_teams',
+
+# error_check([sublist[2] for sublist in list_of_teams],
+#             'the prelim groups in list_of_teams',
+#             max_length=15,
+#             )
+
+error_check([sublist[1] for sublist in team_codes],
+            'the team codes in team_codes',
             max_length=4)
-error_check([sublist[2] for sublist in list_of_teams],
-            'the prelim groups in list_of_teams',
-            max_length=15,
-            # max_duplicates=8
-            )
 
 try:
     error_check(prelim_group_names,
@@ -211,9 +216,9 @@ error_check([sublist[0] for sublist in room_assignments],
 # also created a dictionary where the key/value pairs are swapped
 team_code_dict = {}
 code_team_dict = {}
-for team in list_of_teams:
-    team_name = team[0]
-    team_code = team[1]
+for row in team_codes:
+    team_name = row[0]
+    team_code = row[1]
     team_code_dict[team_name] = team_code
     code_team_dict[team_code] = team_name
 
@@ -236,7 +241,7 @@ for i in room_assignments:
 # %% error catching
 
 # TODO eventually shunt this over to the round robin schedule script
-prelim_team_count = 6
+# prelim_team_count = 6
 # halts program if schedule requires RR other than 4, 6, or 8
 # if prelim_team_count <= 3 or playoff_team_count <= 3:
 #     print('Unable to produce round robins smaller than 4.')

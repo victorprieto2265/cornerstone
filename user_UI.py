@@ -84,7 +84,7 @@ else:
     tournament_format = team_count + input('   enter single capital letter => ')
 
 for phase in ['prelims', 'playoffs']:
-    source = f'./inputs/master_templates/{tournament_format}_{phase}.xlsx'
+    source = f'./templates/{tournament_format}_{phase}.xlsx'
     destination = f'./data input/{phase}_data.xlsx'
     if os.path.exists(destination) is True:
         print('\n***\nWarning! File exists already. Do you wish to overwrite?')

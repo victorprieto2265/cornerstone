@@ -9,7 +9,7 @@ from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      MultiRow, VerticalSpace, NewLine)
 from pylatex.utils import NoEscape
 from cornerstone_input import (start_time,
-                               list_of_teams,
+                               list_of_teams, team_code_dict,
                                qr_toggle, text_toggle,
                                qr_codes, qr_captions,
                                texts)
@@ -94,7 +94,7 @@ with doc.create(LongTable('|ll|c|')) as table:
     table.end_table_last_footer()
     table.add_hline()
     for i in list_of_teams:
-        team = prelim_team(i[0], i[1], i[2], i[3])
+        team = prelim_team(i[0], team_code_dict[i[0]], i[1], i[2])
         table.add_row(team.name, team.code, team.prelim_group)
 doc = close_latex(filename, doc)
 

@@ -23,9 +23,9 @@ def by_value(item):
 # create dictionaries of relevant data from prelim_results
 # =============================================================================
 
-team_placement = {rows[0]: (rows[2], str(rows[3])) for rows in list_of_teams}
-team_ppb = {rows[0]: (rows[4]) for rows in list_of_teams}
-placement_team = {(rows[2] + str(rows[3])): rows[0] for rows in list_of_teams}
+team_placement = {rows[0]: (rows[1], str(rows[2])) for rows in list_of_teams}
+team_ppb = {rows[0]: (rows[3]) for rows in list_of_teams}
+placement_team = {(rows[1] + str(rows[2])): rows[0] for rows in list_of_teams}
 
 advance_count = format_dict['the number of teams that advance to each bracket'
                             + ' (e.g. top 2 or top 3)']
@@ -36,11 +36,11 @@ crossover = format_dict['crossover']
 
 # sort list by index 1 descending, index 2 ascending
 # print(*list_of_teams, sep='\n')
-sorted_list = sorted(list_of_teams, key=lambda x: (x[3], -x[4]))
+sorted_list = sorted(list_of_teams, key=lambda x: (x[2], -x[3]))
 if crossover != 'N':
     # ignore PPB if using crossover schedule
     # TODO I don't know if this is best method but it works for now
-    sorted_list = sorted(list_of_teams, key=lambda x: (x[3]))
+    sorted_list = sorted(list_of_teams, key=lambda x: (x[2]))
 # print(*sorted_list, sep='\n')
 
 
