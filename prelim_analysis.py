@@ -153,7 +153,7 @@ if crossover != 'N':
 # sorted_list = sorted(final_list, key=lambda x: (x[2], -x[3]))
 
 
-# %% for visual debugging
-print('\n\n*** sorted_list ***\n\n')
-print(*sorted_list[0:25], sep='\n')
-print('continued...')
+# # %% for visual debugging
+# print('\n\n*** sorted_list ***\n\n')
+# print(*sorted_list[0:20], sep='\n')
+# print('continued...')

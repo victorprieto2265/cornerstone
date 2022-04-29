@@ -120,8 +120,8 @@ def remove_duplicates(alist):
 
 def start_latex(filename_input, docname, title=True, fontsize=False):
 
-    Path("./outputs/").mkdir(parents=True, exist_ok=True)
-    file_path = r'./outputs/'
+    Path("./output/").mkdir(parents=True, exist_ok=True)
+    file_path = r'./output/'
     Path(file_path).mkdir(parents=True, exist_ok=True)
     filename = file_path + filename_input        
     
@@ -162,7 +162,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     name = '{' + format_dict['tournament name'] + '}'
     doc.append(NoEscape(fr'\rhead{date}'))
     doc.append(NoEscape(fr'\lhead{name}'))
-    doc.append(NoEscape(r'\rfoot{Created by PACE Cornerstone}'))
+    doc.append(NoEscape(r'\rfoot{Created by Cornerstone.}'))
         
     return doc
 

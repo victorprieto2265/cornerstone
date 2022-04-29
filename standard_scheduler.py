@@ -78,7 +78,7 @@ def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1,
         rr_schedule = pd.read_excel(f'{rr_schedule}.xlsx').values.tolist()
     except FileNotFoundError:
         print('*** WARNING ***\nNo file found for rr_schedule... '
-              + 'Or, too many prelim groups or playoff brackets.')
+              + 'Or, too many prelim groups or playoff brackets?')
         sys.exit()
 
     # produce roomlist

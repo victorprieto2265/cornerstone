@@ -9,15 +9,15 @@ from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      MultiRow, VerticalSpace)
 from pylatex.utils import NoEscape
 
-from tournament_format import (prelim_round_count, playoff_round_count)
-
-from cornerstone_input import (list_of_teams,
-                               code_team_dict, lorem)
-from super_scheduler import (full_schedule_grid, super_record_dict,
-                             super_bracket_list, teamcode_super_dict)
-from playoff_scheduler import (playoff_teamcode_dict,
-                               teamcode_playoff_dict)
-from function_definitions import (playoff_team, start_latex, close_latex,
+from cornerstone_input import (list_of_teams, format_dict,
+                               super_bracket_names,
+                               code_team_dict, team_code_dict,
+                               lorem)
+from super_scheduler import (full_schedule_grid,
+                             teamcode_super_dict,
+                             round_start)
+# from playoff_scheduler import (teamcode_playoff_dict)
+from function_definitions import (team, start_latex, close_latex,
                                   header_stringify, alternating_rows)
 from specific_functions import (get_team_list,
                                 get_room_list,
@@ -48,12 +48,14 @@ docname = 'Team Index'
 
 doc = start_latex(filename, docname)
 
+doc.append(NoEscape(r'\lfoot{*PPB is up to date through playoffs.}'))
 doc.append(NoEscape(r'\rowcolors{3}{gray!15}{white}'))
 
 alternating_rows(doc, 'gray!15')
-with doc.create(LongTable('|ll|c|c|')) as table:
+with doc.create(LongTable('|llllc|')) as table:
     table.append(NoEscape(r'\rowcolor{gray!30}'))
     head_foot_row = (r'\textbf{Team Name} & \textbf{Code}'
+                     + r'&\textbf{PPB*}'
                      + r'&\textbf{Superplayoff Bracket}'
                      + r'&\textbf{W-L}\\')
     table.add_hline()
@@ -72,13 +74,17 @@ with doc.create(LongTable('|ll|c|c|')) as table:
     table.end_table_last_footer()
     table.add_hline()
     for i in list_of_teams:
-        playoff_seed = teamcode_playoff_dict[i[1]][-1]
-        playoff_bracket = teamcode_playoff_dict[i[1]][:-1]
-        team = playoff_team(i[0], i[1], i[2],
-                            playoff_bracket, playoff_seed)
-        super_bracket = teamcode_super_dict[i[1]][:-1]
-        record = super_record_dict[team.code]
-        table.add_row(team.name, team.code,
+        teamname = i[0]
+        teamcode = team_code_dict[teamname]
+        playoff_finish = i[2]
+        ppb = '%s' % '%.2f' % i[3]
+        super_bracket = teamcode_super_dict[teamcode][:-1]
+        super_seed = int(teamcode_super_dict[teamcode][-1])
+        if playoff_finish % 2 == 1:
+            record = '1-0'
+        else:
+            record = '0-1'
+        table.add_row(teamname, teamcode, ppb,
                       super_bracket, record)
 
 doc = close_latex(filename, doc)
@@ -90,7 +96,7 @@ docname = 'Superplayoffs - Complete Schedule'
 
 doc = start_latex(filename, docname)
 
-for index, super_bracket in enumerate(super_bracket_list):
+for index, super_bracket in enumerate(super_bracket_names):
     alternating_rows(doc, 'gray!15')
     table_title = f'Superplayoff Bracket: {super_bracket}'
     with doc.create(Section(table_title, numbering=False)):
@@ -120,22 +126,19 @@ doc = close_latex(filename, doc)
 # %% create team-specific schedules
 # TODO expand to schedules with byes
 
-filename = 'super_team_specific_schedules'
-docname = 'Superplayoff Schedules - Team Specific'
+filename = 'super_individual_team_schedules'
+docname = 'Superplayoffs - Individual Team Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
 
-    bracket = super_bracket_list[index]
+    bracket = super_bracket_names[index]
 
     room_list = get_room_list(schedule_grid)
     team_list = get_team_list(schedule_grid)
     # FIXME does this next line still apply for odd rounds? prob not.
     round_count = len(team_list)
     basic_schedule_grid = clean_up_grid(schedule_grid)
-
-    # define number for first round in schedule
-    round_start = prelim_round_count+playoff_round_count+1
 
     # iterate for each team in teamlist
     for team in team_list:
@@ -151,6 +154,7 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         schedule = specific_team_scheduler(team,
                                            basic_schedule_grid,
                                            room_list,
+                                           code_team_dict,
                                            round_start=round_start)
 
         alternating_rows(doc, 'gray!15')
@@ -183,13 +187,13 @@ doc = close_latex(filename, doc)
 
 # %% create room-specific schedules
 
-filename = 'super_room_specific_schedules'
-docname = 'Superplayoff Schedules - Room Specific'
+filename = 'super_individual_room_schedules'
+docname = 'Superplayoffs - Individual Room Schedules'
 doc = start_latex(filename, docname)
 
 for index, schedule_grid in enumerate(full_schedule_grid):
 
-    bracket = super_bracket_list[index]
+    bracket = super_bracket_names[index]
 
     room_list = get_room_list(schedule_grid)
     # FIXME do these two lines still apply for odd rounds? prob not.
@@ -197,15 +201,13 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     round_count = len(team_list)  # FIXME not sure why this line is here...
     clean_up_grid(schedule_grid)
 
-    # define number for first round in schedule
-    round_start = prelim_round_count+playoff_round_count+1
-
     # iterate for each room in roomlist
     for room in room_list:
 
         schedule = specific_room_scheduler(room,
                                            schedule_grid,
                                            room_list,
+                                           code_team_dict,
                                            round_start=round_start)
 
         # bracket and room above room specific schedule

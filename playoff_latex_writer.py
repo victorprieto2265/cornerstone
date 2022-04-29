@@ -19,7 +19,7 @@ from playoff_scheduler import (full_schedule_grid,
 #                                tournament_date, playoff_team_count,
 #                                )
 from cornerstone_input import (list_of_teams, playoff_bracket_names,
-                               code_team_dict,
+                               code_team_dict, team_code_dict,
                                qr_toggle, text_toggle,
                                qr_codes, qr_captions,
                                texts)
@@ -55,14 +55,19 @@ list_of_teams = sorted(list_of_teams, key=lambda x: (x[0]))
 
 doc = start_latex(filename, docname)
 
+# TODO remove me after NSC
+normal_text = r'\lfoot{All teams begin playoffs with a record of 0-0.}'
+doc.append(NoEscape(normal_text))
+
 doc.append(NoEscape(r'\rowcolors{3}{gray!15}{white}'))
 
 alternating_rows(doc, 'gray!15')
-with doc.create(LongTable('|ll|lc|l|')) as table:
+with doc.create(LongTable('|l|lcc|l|')) as table:
     table.append(NoEscape(r'\rowcolor{gray!30}'))
-    head_foot_row = (r'\textbf{Team Name} & \textbf{Code}'
-                     + r'&\textbf{Prelim Group}'
-                     + r'&\textbf{Prelim Finish}'
+    head_foot_row = (r'\textbf{Team Name} '
+                     + r'&\textbf{Prelim Bracket}'
+                     + r'&\textbf{Finish}'
+                     + r'&\textbf{PPB}'
                      + r'&\textbf{Playoff Bracket}\\')
     table.add_hline()
     table.append(NoEscape(head_foot_row))
@@ -79,21 +84,34 @@ with doc.create(LongTable('|ll|lc|l|')) as table:
     table.add_hline()
     table.end_table_last_footer()
     table.add_hline()
-    for i in list_of_teams:
-        playoff_seed = teamcode_playoff_dict[i[1]][-1]
-        prelim_finish = i[3]
-        playoff_bracket = teamcode_playoff_dict[i[1]][:-1]
-        team = playoff_team(i[0], i[1], i[2],
-                            playoff_bracket, playoff_seed)
-        table.add_row(team.name, team.code, team.prelim_group,
-                      prelim_finish, team.playoff_bracket)
+    # for i in list_of_teams:
+    #     team = team_code_dict[i[0]]
+    #     playoff_seed = teamcode_playoff_dict[team][:-1]
+    #     prelim_finish = i[3]
+    #     playoff_bracket = teamcode_playoff_dict[i[1]][:-1]
+    #     team = playoff_team(i[0], i[1], i[2],
+    #                         playoff_bracket, playoff_seed)
+    #     table.add_row(team.name, team.code, team.prelim_group,
+    #                   prelim_finish, team.playoff_bracket)
 
-# %% team index crossover text
-if crossover != 'N':
-    normal_text = 'Teams with an odd number in the "Prelim Finish" column begin playoffs with one win, while teams with an even number begin playoffs with one loss.'
-    italic_text = ' Exception: any team who was the only team to advance from their prelim bracket starts with no wins and no losses.'
-    doc.append(normal_text)
-    doc.append(italic(italic_text))
+    for i in list_of_teams:
+        teamcode = team_code_dict[i[0]]
+        playoff_seed = teamcode_playoff_dict[teamcode][-1]
+        prelim_finish = i[2]
+        ppb = '%s' % '%.2f' % i[3]
+        playoff_bracket = teamcode_playoff_dict[teamcode][:-1]
+        team = playoff_team(i[0], teamcode, i[1],
+                            playoff_bracket, playoff_seed)
+        table.add_row(team.name,
+                      team.prelim_group, prelim_finish,
+                      ppb, team.playoff_bracket)
+
+# # # %% team index crossover text
+# if crossover != 'N':
+#     normal_text = 'Teams with an odd number in the "Prelim Finish" column begin playoffs with one win, while teams with an even number begin playoffs with one loss.'
+#     italic_text = ' Exception: any team who was the only team to advance from their prelim bracket starts with no wins and no losses.'
+#     doc.append(normal_text)
+#     doc.append(italic(italic_text))
 
 doc = close_latex(filename, doc)
 

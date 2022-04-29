@@ -7,7 +7,7 @@ from cornerstone_input import (playoff_bracket_names,
                                format_dict)
 from standard_scheduler import standard_schedule
 from prelim_analysis import sorted_list
-import math
+from nsc_scheduler import playoff_seeding, code1, code2, code3, code4
 
 # place additional modules here
 
@@ -25,32 +25,36 @@ a list for playoffs.
 # %% import list of teams and format according to schedule codes
 
 
-def code_1_scheduler(teamlist, code):
-    code_1 = code.split(',')
-    newlist = []
-    for i in code_1:
-        newlist.append(teamlist[int(i)-1])
-    return newlist
+# def code_1_scheduler(teamlist, code):
+#     code_1 = code.split(',')
+#     newlist = []
+#     for i in code_1:
+#         newlist.append(teamlist[int(i)-1])
+#     return newlist
 
 
-def code_2_scheduler(teamlist, code):
-    code_2 = code.split(',')
-    code_2 = [int(i) for i in code_2]
-    newlist = []
-    for index, element in enumerate(code_2):
-        slice1 = sum(code_2[0:index])
-        slice2 = slice1 + element
-        newlist.append(teamlist[slice1:slice2])
-    return newlist
+# def code_2_scheduler(teamlist, code):
+#     code_2 = code.split(',')
+#     code_2 = [int(i) for i in code_2]
+#     newlist = []
+#     for index, element in enumerate(code_2):
+#         slice1 = sum(code_2[0:index])
+#         slice2 = slice1 + element
+#         newlist.append(teamlist[slice1:slice2])
+#     return newlist
 
 
-# reorganize sorted_list according to the playoff schedule code 1
-schedule_code_1 = format_dict['playoff schedule code 1']
-sorted_list = code_1_scheduler(sorted_list, schedule_code_1)
+# # reorganize sorted_list according to the playoff schedule code 1
+# schedule_code_1 = format_dict['playoff schedule code 1']
+# sorted_list = code_1_scheduler(sorted_list, schedule_code_1)
 
-# split sorted_list according to playoff schedule code 2
-schedule_code_2 = format_dict['playoff schedule code 2']
-sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
+# # split sorted_list according to playoff schedule code 2
+# schedule_code_2 = format_dict['playoff schedule code 2']
+# sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
+
+# TODO remove specific nsc scheduler script at some point after NSC...
+# unless the nsc scheduler is actually a better way of seeding?
+sorted_list = playoff_seeding(sorted_list, code1, code2, code3, code4)
 
 prelim_round_count = format_dict['number of prelim rounds '
                                  + '(do not include tiebreakers)']

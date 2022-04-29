@@ -87,8 +87,9 @@ def analyze_input(sheet_name, df_dict):
 print('\n***\nAre you uploading excel sheets for prelim schedule creation'
       + ' or rebracketing for playoffs?')
 tournament_phase = input('   enter "prelims" or "playoffs" => ')
+# tournament_phase = 'playoffs'
 
-while tournament_phase not in ['prelims', 'playoffs']:
+while tournament_phase not in ['prelims', 'playoffs', 'super']:
     print('\n***incorrect input provided, please retry***')
     print('\nSelect either prelim schedule creation or '
           + 'rebracketing for playoffs:')
@@ -118,14 +119,33 @@ except FileNotFoundError:
 
     sys.exit()
 
-if tournament_phase == 'prelims':
-    prelim_group_names = analyze_input('group names', df_dict_prelim)
-elif tournament_phase == 'playoffs':
-    rows = analyze_input('group names', df_dict_prelim)
-    prelim_group_names = [row[0] for row in rows]
-    playoff_bracket_names = [row[1] for row in rows]
+# if tournament_phase == 'prelims':
+#     prelim_group_names = analyze_input('group names', df_dict_prelim)
+# elif tournament_phase == 'playoffs':
+#     rows = analyze_input('group names', df_dict_prelim)
+#     prelim_group_names = [row[0] for row in rows]
+#     playoff_bracket_names = [row[1] for row in rows]
+#     playoff_bracket_names = [x for x in playoff_bracket_names
+#                              if str(x) != 'nan']
+# elif tournament_phase == 'super':
+#     pass
+
+
+###
+
+group_names = analyze_input('group names', df_dict_prelim)
+prelim_group_names = [row[0] for row in group_names]
+if tournament_phase in ['playoffs', 'super']:
+    playoff_bracket_names = [row[1] for row in group_names]
     playoff_bracket_names = [x for x in playoff_bracket_names
                              if str(x) != 'nan']
+if tournament_phase == 'super':
+    super_bracket_names = [row[2] for row in group_names]
+    super_bracket_names = [x for x in super_bracket_names
+                             if str(x) != 'nan']
+
+###
+    
 
 
 format_dict = {}
