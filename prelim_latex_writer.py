@@ -142,6 +142,7 @@ doc = start_latex(filename, docname)
 for index, schedule_grid in enumerate(full_schedule_grid):
 
     group = prelim_group_names[index]
+    print(f'\n{group}\n')
 
     room_list = get_room_list(schedule_grid)
     team_list = get_team_list(schedule_grid)
@@ -153,7 +154,6 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     for team in team_list:  # FIXME arrange teams in alphabetical order!
         alternating_rows(doc, 'gray!15')
         team_name = code_team_dict[team]
-
         doc.append(NoEscape(r'\begin{center}'))
         doc.append(HugeText(team_name))
         doc.append(VerticalSpace('12pt'))
@@ -243,7 +243,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             table.add_hline()
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
-            table.add_hline()
+                table.add_hline()
+                doc.append(NoEscape(r'Score | Initial&|&|\\'))
+                table.add_hline()
         doc.append(VerticalSpace('16pt'))
         doc.append(LineBreak())
 

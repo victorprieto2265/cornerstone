@@ -18,6 +18,9 @@ Created on Sat Oct  9 18:37:20 2021 Eastern Time
 This script accepts the prelim_analysis output and reorders teams into
 a list for playoffs.
 
+TODO: this script has big problems with reading tournament format codes. Right
+now, it is hard-coded into nsc_scheduler.py, which needs to be changed.
+
 @author: Victor Prieto
 
 """
@@ -25,36 +28,50 @@ a list for playoffs.
 # %% import list of teams and format according to schedule codes
 
 
-# def code_1_scheduler(teamlist, code):
-#     code_1 = code.split(',')
-#     newlist = []
-#     for i in code_1:
-#         newlist.append(teamlist[int(i)-1])
-#     return newlist
+def code_1_scheduler(teamlist, code):
+    code_1 = code.split(',')
+    newlist = []
+    for i in code_1:
+        newlist.append(teamlist[int(i)-1])
+    return newlist
 
 
-# def code_2_scheduler(teamlist, code):
-#     code_2 = code.split(',')
-#     code_2 = [int(i) for i in code_2]
-#     newlist = []
-#     for index, element in enumerate(code_2):
-#         slice1 = sum(code_2[0:index])
-#         slice2 = slice1 + element
-#         newlist.append(teamlist[slice1:slice2])
-#     return newlist
+def code_2_scheduler(teamlist, code):
+    code_2 = code.split(',')
+    code_2 = [int(i) for i in code_2]
+    newlist = []
+    for index, element in enumerate(code_2):
+        slice1 = sum(code_2[0:index])
+        slice2 = slice1 + element
+        newlist.append(teamlist[slice1:slice2])
+    return newlist
 
 
-# # reorganize sorted_list according to the playoff schedule code 1
-# schedule_code_1 = format_dict['playoff schedule code 1']
-# sorted_list = code_1_scheduler(sorted_list, schedule_code_1)
+# reorganize sorted_list according to the playoff schedule code 1
+schedule_code_1 = format_dict['playoff schedule code 1']
+sorted_list = code_1_scheduler(sorted_list, schedule_code_1)
 
-# # split sorted_list according to playoff schedule code 2
-# schedule_code_2 = format_dict['playoff schedule code 2']
-# sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
+# split sorted_list according to playoff schedule code 2
+schedule_code_2 = format_dict['playoff schedule code 2']
+sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
 
 # TODO remove specific nsc scheduler script at some point after NSC...
 # unless the nsc scheduler is actually a better way of seeding?
-sorted_list = playoff_seeding(sorted_list, code1, code2, code3, code4)
+
+# TODO this is an emergency visual check to make sure team codes are lined up
+for team in team_code_dict:
+    code = team_code_dict[team]
+    print(f'team: {team}\ncode: {code}\n')
+codecheck = input('\nAre all teams assigned the correct code?\n'
+                  + 'enter "Y" if yes: ')
+if codecheck not in ['Y', 'y', 'yes']:
+    print('\nCodecheck failed. Correct team codes in data input and retry.')
+    sys.exit()
+
+
+# %% NSC specific scheduler
+
+# sorted_list = playoff_seeding(sorted_list, code1, code2, code3, code4)
 
 prelim_round_count = format_dict['number of prelim rounds '
                                  + '(do not include tiebreakers)']
@@ -62,6 +79,23 @@ prelim_round_count = format_dict['number of prelim rounds '
 crossover = format_dict['crossover']
 if crossover == 'N':
     crossover = False
+
+# %% backdoor for manual swaps
+
+# TODO manual swaps
+# sorted_list = sorted_list # copy/paste backdoor here
+
+# for i in sorted_list:
+#     print(*i, sep='\n')
+#     print('\n')
+
+# manual_swaps = input('\nAre manual swaps necessary?\nenter "Y" if yes: ')
+# if manual_swaps == 'Y':
+#     print('\nMake modifications as necessary in the list below.\n\n')
+#     print(sorted_list)
+#     print('\n\nAfter completing modifications, copy/paste directly into code'
+#           + ' in playoff_scheduler, around line ~68.')
+#     sys.exit()
 
 # %% generate playoff seed / team dictionary
 

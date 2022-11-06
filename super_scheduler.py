@@ -74,11 +74,11 @@ sorted_list = code_1_scheduler(list_of_teams, schedule_code_1)
 schedule_code_2 = format_dict['playoff schedule code 2']
 sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
 
-print('\n\noutput sorted_list\n')
-for i in sorted_list:
-    print(*i, sep='\n')
-    print('\n')
-print('\n***\n')
+# print('\n\noutput sorted_list\n')
+# for i in sorted_list:
+#     print(*i, sep='\n')
+#     print('\n')
+# print('\n***\n')
 
 crossover = format_dict['crossover']
 if crossover == 'N':
@@ -91,6 +91,20 @@ playoff_round_count = format_dict['number of playoff rounds '
                                  + '(do not include tiebreakers)']
 round_start = prelim_round_count + playoff_round_count + 1
 
+# %% backdoor for manual swaps
+
+sorted_list = sorted_list  # copy/paste backdoor here
+
+for i in sorted_list:
+    print(*i, sep='\n')
+    print('\n')
+
+manual_swaps = input('\nAre manual swaps necessary?\nenter "Y" if yes: ')
+if manual_swaps == 'Y':
+    print('\nMake modifications as necessary in the list below.\n\n')
+    print(sorted_list)
+    print('\n\nAfter completing modifications, copy/paste directly into code.')
+    sys.exit()
 
 # %% super input analysis
 
@@ -175,10 +189,10 @@ for index, super_bracket in enumerate(super_bracket_names):
     full_schedule_grid.append(schedule_grid)
 
 
-# # for visual debugging
-# for index, super_bracket in enumerate(super_bracket_names):
-#     print(f'\nSuper Group: {super_bracket}')
-#     print(*full_schedule_grid[index], sep='\n')
+# for visual debugging
+for index, super_bracket in enumerate(super_bracket_names):
+    print(f'\nSuper Group: {super_bracket}')
+    print(*full_schedule_grid[index], sep='\n')
 
 
 # %% end runtime

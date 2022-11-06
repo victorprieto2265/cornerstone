@@ -6,19 +6,22 @@ import os
 from pylatex import (Document, Section, Subsection, Tabularx, Command,
                      NewPage, PageStyle, LargeText, HugeText,
                      LineBreak, LongTable, MultiColumn,
-                     MultiRow, VerticalSpace)
+                     MultiRow, VerticalSpace, NewLine)
 from pylatex.utils import NoEscape
 
 from cornerstone_input import (list_of_teams, format_dict,
                                super_bracket_names,
+                               qr_toggle, text_toggle,
                                code_team_dict, team_code_dict,
-                               lorem)
+                               qr_codes, qr_captions,
+                               texts)
 from super_scheduler import (full_schedule_grid,
                              teamcode_super_dict,
                              round_start)
 # from playoff_scheduler import (teamcode_playoff_dict)
 from function_definitions import (team, start_latex, close_latex,
-                                  header_stringify, alternating_rows)
+                                  header_stringify, alternating_rows,
+                                  qr_code)
 from specific_functions import (get_team_list,
                                 get_room_list,
                                 specific_team_scheduler,
@@ -40,6 +43,12 @@ Created on Sun Jan  2 15:42:28 2022
 start_time = time.time()
 print('\n', header)
 print('start time: %s' % time.ctime())
+
+# %% sort teams alphabetically (can change to other orders perhaps)
+
+list_of_teams = sorted(list_of_teams, key=lambda x: (x[0]))
+
+print(list_of_teams)
 
 # %% create team index
 
@@ -130,6 +139,10 @@ filename = 'super_individual_team_schedules'
 docname = 'Superplayoffs - Individual Team Schedules'
 doc = start_latex(filename, docname)
 
+# TODO remove me after NSC
+normal_text = r'\lfoot{All teams begin superplayoffs with either 1 win or 1 loss.}'
+doc.append(NoEscape(normal_text))
+
 for index, schedule_grid in enumerate(full_schedule_grid):
 
     bracket = super_bracket_names[index]
@@ -146,10 +159,11 @@ for index, schedule_grid in enumerate(full_schedule_grid):
 
         doc.append(NoEscape(r'\begin{center}'))
         doc.append(HugeText(team_name))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(VerticalSpace('12pt'))
         doc.append(LineBreak())
         doc.append(LargeText(f'Superplayoff Bracket - {bracket}'))
         doc.append(NoEscape(r'\end{center}'))
+        doc.append(VerticalSpace('4pt'))
 
         schedule = specific_team_scheduler(team,
                                            basic_schedule_grid,
@@ -170,15 +184,19 @@ for index, schedule_grid in enumerate(full_schedule_grid):
                 table.add_row(row, strict=False)
             table.add_hline()
         doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
+        doc.append(NewLine())
 
-        # for eventual text input
-        doc.append(lorem)
+        if text_toggle is True:
+            doc.append(VerticalSpace('30pt'))
+            doc.append(LineBreak())
+            doc.append(texts[0])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
 
-        doc.append(VerticalSpace('30pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+        if qr_toggle is True:
+            qr_codes_2 = qr_codes[3:6]
+            qr_captions_2 = qr_captions[3:6]
+            qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 
@@ -213,14 +231,12 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         # bracket and room above room specific schedule
 
         doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('Room Specific Superplayoff Schedule'))
-        doc.append(VerticalSpace('8pt'))
+        doc.append(HugeText('Individual Room Schedule'))
+        doc.append(VerticalSpace('16pt'))
         doc.append(LineBreak())
-        doc.append(LargeText(f'Bracket - {bracket}'))
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LineBreak())
-        doc.append(VerticalSpace('8pt'))
-        doc.append(LargeText(f'Room - {room}'))
+        doc.append(NoEscape(r'\begin{Large}'))
+        doc.append(NoEscape(fr'Superplayoff Bracket: {bracket} \hfill Room: {room}'))
+        doc.append(NoEscape(r'\end{Large}'))
         doc.append(NoEscape(r'\end{center}'))
 
         # create table with formatting
@@ -233,16 +249,21 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             table.add_hline()
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
-            table.add_hline()
+                table.add_hline()
+                doc.append(NoEscape(r'Score | Initial&|&|\\'))
+                table.add_hline()
         doc.append(VerticalSpace('8pt'))
+        doc.append(NewLine())
 
-        # for eventual text input
-        doc.append(lorem[1:701])
+        if text_toggle is True:
+            doc.append(texts[1])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
 
-        doc.append(VerticalSpace('140pt'))
-        doc.append(NoEscape(r'\begin{center}'))
-        doc.append(HugeText('QR codes go here'))
-        doc.append(NoEscape(r'\end{center}'))
+        if qr_toggle is True:
+            qr_codes_2 = qr_codes[3:6]
+            qr_captions_2 = qr_captions[3:6]
+            qr_code(doc, qr_codes_2, qr_captions_2)
 
         doc.append(NewPage())
 

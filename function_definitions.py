@@ -100,7 +100,7 @@ def snake_seed(list_of_teams, bracket_count):
 
 
 def alternating_rows(doc, color):
-    return doc.append(NoEscape(r'\rowcolors{3}{%s}{white}' % color))
+    return doc.append(NoEscape(r'\rowcolors{3}{white}{%s}' % color))
 
 
 def duplicate_checker(alist):
@@ -171,6 +171,7 @@ def close_latex(filename_input, doc_input):
     file_path = r'./output/'
     filename = file_path + filename_input
     doc_input.generate_tex()
+    doc_input.generate_pdf()
 
     file = open(filename + '.tex')
     latex_string = file.read()

@@ -45,6 +45,12 @@ start_time = time.time()
 print('\n', header, '\n')
 print('start time: %s Eastern Time' % time.ctime())
 
+# %% define some variables common to all prints
+
+# define number for first round in schedule
+round_start = prelim_round_count+1
+
+
 # %% create team index
 
 filename = 'playoff_team_index'
@@ -157,6 +163,11 @@ filename = 'playoff_individual_schedules'
 docname = 'Playoffs - Individual Team Schedules'
 doc = start_latex(filename, docname)
 
+# TODO remove me after NSC
+normal_text = r'\lfoot{All teams begin superplayoffs with a record of 0-0.}'
+doc.append(NoEscape(normal_text))
+
+
 for index, schedule_grid in enumerate(full_schedule_grid):
 
     bracket = playoff_bracket_names[index]
@@ -166,9 +177,6 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     # FIXME does this next line still apply for odd rounds? prob not.
     round_count = len(team_list)
     basic_schedule_grid = clean_up_grid(schedule_grid)
-
-    # define number for first round in schedule
-    round_start = prelim_round_count+1
 
     # iterate for each team in teamlist
     for team in team_list:
@@ -237,9 +245,6 @@ for index, schedule_grid in enumerate(full_schedule_grid):
     round_count = len(team_list)  # FIXME not sure why this line is here...
     clean_up_grid(schedule_grid)
 
-    # define number for first round in schedule
-    round_start = prelim_round_count+1
-
     # iterate for each room in roomlist
     for room in room_list:
 
@@ -270,7 +275,9 @@ for index, schedule_grid in enumerate(full_schedule_grid):
             table.add_hline()
             for row in schedule[1:]:
                 table.add_row(row, strict=False)
-            table.add_hline()
+                table.add_hline()
+                doc.append(NoEscape(r'Score | Initial&|&|\\'))
+                table.add_hline()
         doc.append(VerticalSpace('16pt'))
         doc.append(LineBreak())
 
@@ -287,6 +294,77 @@ for index, schedule_grid in enumerate(full_schedule_grid):
         doc.append(NewPage())
 
 doc = close_latex(filename, doc)
+
+# %% create schedule for first round of playoffs, "Quickstart"
+
+filename = 'playoff_quickstart'
+docname = 'Playoffs - Quickstart'
+doc = start_latex(filename, docname)
+
+doc.append(NoEscape(r'\begin{center}'))
+doc.append(HugeText(f'Round {round_start} Schedule'))
+doc.append(VerticalSpace('12pt'))
+doc.append(LineBreak())
+doc.append(NoEscape(r'\end{center}'))
+
+for index, schedule_grid in enumerate(full_schedule_grid):
+    
+    bracket = playoff_bracket_names[index]
+
+    room_list = get_room_list(schedule_grid)
+    team_list = get_team_list(schedule_grid)
+    basic_schedule_grid = clean_up_grid(schedule_grid)
+    basic_schedule_grid = basic_schedule_grid[0]
+
+    doc.append(LargeText(f'Playoff Bracket - {bracket}'))
+    doc.append(VerticalSpace('4pt'))
+
+    # print(*basic_schedule_grid, sep='\n\n')
+
+    # iterate for each team in teamlist
+    for team in team_list:
+        print(team)
+        continue
+        team_name = code_team_dict[team]
+
+        schedule = specific_team_scheduler(team,
+                                           basic_schedule_grid,
+                                           room_list,
+                                           code_team_dict,
+                                           round_start=round_start)
+
+        alternating_rows(doc, 'gray!15')
+
+        width = r"\textwidth"
+        with doc.create(Tabularx('|c|Y|Y|',
+                                 width_argument=NoEscape(width))) as table:
+
+            table.add_hline()
+            table.add_row(schedule[0], strict=False)
+            table.add_hline()
+            for row in schedule[1:]:
+                table.add_row(row, strict=False)
+            table.add_hline()
+
+        if text_toggle is True:
+            doc.append(VerticalSpace('30pt'))
+            doc.append(LineBreak())
+            doc.append(texts[0])
+            doc.append(VerticalSpace('30pt'))
+            doc.append(NewLine())
+        else:
+            doc.append(VerticalSpace('80pt'))  # TODO verify this works
+            doc.append(LineBreak())
+
+        if qr_toggle is True:
+            qr_codes_1 = qr_codes[0:3]
+            qr_captions_1 = qr_captions[0:3]
+            qr_code(doc, qr_codes_1, qr_captions_1)
+
+        doc.append(NewPage())
+
+doc = close_latex(filename, doc)
+
 
 # %% end runtime
 

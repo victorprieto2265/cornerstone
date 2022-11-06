@@ -86,8 +86,8 @@ def analyze_input(sheet_name, df_dict):
 # step 0 = identify which excel files to pull? (not implemented while testing)
 print('\n***\nAre you uploading excel sheets for prelim schedule creation'
       + ' or rebracketing for playoffs?')
-tournament_phase = input('   enter "prelims" or "playoffs" => ')
-# tournament_phase = 'playoffs'
+# tournament_phase = input('   enter "prelims" or "playoffs" => ')
+tournament_phase = 'prelims'
 
 while tournament_phase not in ['prelims', 'playoffs', 'super']:
     print('\n***incorrect input provided, please retry***')
@@ -130,9 +130,6 @@ except FileNotFoundError:
 # elif tournament_phase == 'super':
 #     pass
 
-
-###
-
 group_names = analyze_input('group names', df_dict_prelim)
 prelim_group_names = [row[0] for row in group_names]
 if tournament_phase in ['playoffs', 'super']:
@@ -144,10 +141,6 @@ if tournament_phase == 'super':
     super_bracket_names = [x for x in super_bracket_names
                              if str(x) != 'nan']
 
-###
-    
-
-
 format_dict = {}
 for row in tournament_format:
     key = row[0]  # item, e.g. "tournament name"
@@ -155,7 +148,6 @@ for row in tournament_format:
     format_dict[key] = value
 
 # convert Excel datetime format to more suitable date string
-print(format_dict['tournament date'])
 date = format_dict['tournament date'].strftime('%B %d, %Y')
 format_dict['tournament date'] = date
 
@@ -270,6 +262,9 @@ for i in room_assignments:
 # if prelim_team_count >= 15 or playoff_team_count >= 15:
 #     print('Unable to produce round robins larger than 14.')
 #     sys.exit()
+
+
+# pause = input('\n\nVerify no errors occurred. Press enter to continue.\n\n')
 
 if error == 0:
     print('\nNo errors detected upon import.')

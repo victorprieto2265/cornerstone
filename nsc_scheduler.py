@@ -10,6 +10,9 @@ docstring = """
 A special playoff scheduler created for NSC, which is able to swap teams around
 to avoid repeat matches in the afternoon.
 
+CRITICAL: there are hardcoded format codes in this script. They should rely
+on the codes imported in df_dict_prelim in cornerstone_input.py instead.
+
 Created on April 25, 2022
 
 @author: Victor Prieto
@@ -97,7 +100,7 @@ def playoff_seeding(alist, code1, code2, code3, code4):
     
     # split sorted list of teams into tiers
     tiered_list = teamlist_splitter(alist, code1)
-    
+        
     swapped_list = []    
     for tier in tiered_list:
         
@@ -116,6 +119,8 @@ def playoff_seeding(alist, code1, code2, code3, code4):
             group_index -= 1  # subtract 1 from group_index for zero indexing
             group = grouped_teams[group_index]
             team_index = 0
+            print('\n***\n')
+            print(*tier, sep='\n')
             team = tier[team_index]
             prelim_group = team[1]
             grouplist = [team[1] for team in group]
@@ -176,6 +181,8 @@ def playoff_seeding(alist, code1, code2, code3, code4):
 # this is the part that goes into the playoff rebracketing script
 
 # from nsc_scheduler import playoff_seeding
+
+# TODO THESE ARE HARD CODED, VERY BAD
 
 code1 = '24,24,24'
 code2 = '1,8,9,2,7,10,3,6,11,4,5,12'
