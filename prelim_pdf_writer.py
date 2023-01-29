@@ -40,7 +40,7 @@ if __name__ == '__main__':
     doc = Document('basic')
     fill_document(doc)
 
-    doc.generate_pdf(clean_tex=False)
+    # doc.generate_pdf(clean_tex=False)  # FIXME why doesn't latexmk work??
     doc.generate_tex()
 
     # Document with `\maketitle` command activated
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     file_path = r'./output/'
     filename = file_path + filename_input
     doc.generate_tex()
-    doc.generate_pdf()
+    # doc.generate_pdf()
 
 
 # %% end runtime

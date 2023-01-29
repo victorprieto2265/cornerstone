@@ -19,7 +19,9 @@ This script accepts the prelim_analysis output and reorders teams into
 a list for playoffs.
 
 TODO: this script has big problems with reading tournament format codes. Right
-now, it is hard-coded into nsc_scheduler.py, which needs to be changed.
+now, it is hard-coded into nsc_scheduler.py, which needs to be changed. 
+
+TODO: removed emergency spot check of all teams + assigned codes.
 
 @author: Victor Prieto
 
@@ -59,14 +61,15 @@ sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
 # unless the nsc scheduler is actually a better way of seeding?
 
 # TODO this is an emergency visual check to make sure team codes are lined up
-for team in team_code_dict:
-    code = team_code_dict[team]
-    print(f'team: {team}\ncode: {code}\n')
-codecheck = input('\nAre all teams assigned the correct code?\n'
-                  + 'enter "Y" if yes: ')
-if codecheck not in ['Y', 'y', 'yes']:
-    print('\nCodecheck failed. Correct team codes in data input and retry.')
-    sys.exit()
+# for team in team_code_dict:
+#     code = team_code_dict[team]
+    # print(f'team: {team}\ncode: {code}\n')
+# codecheck = input('\nAre all teams assigned the correct code?\n'
+#                   + 'enter "Y" if yes: ')
+# if codecheck not in ['Y', 'y', 'yes']:
+#     print('\nCodecheck failed. Correct team codes in data input and retry.' + 
+#           '\nplayoff_scheduler.py')
+#     sys.exit()
 
 
 # %% NSC specific scheduler
@@ -128,21 +131,10 @@ for index, bracket_name in enumerate(playoff_bracket_names):
 # creating a dictionary where k:v pairs are flipped
         teamcode_playoff_dict[value] = key
 
-# # create list for sunday scheduler to detect carryover opponents?
-# playoff_team_list = []
-# for k, v in teamcode_playoff_dict.items():
-#     name = code_team_dict[k]
-#     code = k
-#     prelim_group = teamcode_group_dict[code][0:-1]
-#     playoff_bracket = v[0:-1]
-#     playoff_seed = v[-1]
-#     playoff_team_temp = playoff_team(name, code, prelim_group,
-#                                       playoff_bracket, playoff_seed)
-#     playoff_team_list.append(playoff_team_temp)
-
-# %% create full schedule grid
+# %% create full schedule grid + first playoff room dict
 
 full_schedule_grid = []
+first_playoff_rooms = {}
 
 # perform this process for each prelim group, add to full_schedule_grid
 for bracket_name in playoff_bracket_names:
@@ -155,8 +147,24 @@ for bracket_name in playoff_bracket_names:
                                        roundstart=prelim_round_count+1))
 
     full_schedule_grid.append(schedule_grid)
+    
+    # identify first playoff room for all teams
+    room_row = schedule_grid[0]
+    first_row = schedule_grid[1]
+    print('\n* start *\n')
 
+    # visual debugging
+    for index, team in enumerate(first_row):
+        print(f'room = {int(index//2 + 1)} -- team = {team}')
+    
+    print(room_row)
+    print(first_row)
+    print('\n* finish *\n')
+
+    
 # # prints output for visual debugging
 # for index, playoff_bracket in enumerate(playoff_bracket_names):
 #     print(f'\nPlayoff Bracket: {playoff_bracket}')
 #     print(*full_schedule_grid[index], sep='\n')
+    
+

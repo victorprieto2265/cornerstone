@@ -87,7 +87,7 @@ def analyze_input(sheet_name, df_dict):
 print('\n***\nAre you uploading excel sheets for prelim schedule creation'
       + ' or rebracketing for playoffs?')
 # tournament_phase = input('   enter "prelims" or "playoffs" => ')
-tournament_phase = 'prelims'
+tournament_phase = 'playoffs'
 
 while tournament_phase not in ['prelims', 'playoffs', 'super']:
     print('\n***incorrect input provided, please retry***')

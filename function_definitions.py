@@ -123,8 +123,8 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     Path("./output/").mkdir(parents=True, exist_ok=True)
     file_path = r'./output/'
     Path(file_path).mkdir(parents=True, exist_ok=True)
-    filename = file_path + filename_input        
-    
+    filename = file_path + filename_input
+
     geometry_options = {
         "includeheadfoot": True
     }
@@ -141,7 +141,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     doc.preamble.append(Command('title', format_dict['tournament name']))
     doc.preamble.append(Command('author', format_dict['tournament location']))
     doc.preamble.append(Command('date', format_dict['tournament date']))
-    
+
     doc.packages.append(Package('qrcode'))  # add qrcode to packages
     doc.packages.append(Package('fancyhdr'))  # add qrcode to packages
 
@@ -155,7 +155,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
         doc.append(HugeText(docname))
         doc.append(NoEscape(r'\end{center}'))
         doc.append(NewPage())
-    
+
     doc.append(NoEscape(r'\pagestyle{fancy}'))
     doc.append(NoEscape(r'\fancyhf{}'))
     date = '{' + format_dict['tournament date'] + '}'
@@ -163,7 +163,7 @@ def start_latex(filename_input, docname, title=True, fontsize=False):
     doc.append(NoEscape(fr'\rhead{date}'))
     doc.append(NoEscape(fr'\lhead{name}'))
     doc.append(NoEscape(r'\rfoot{Created by Cornerstone.}'))
-        
+
     return doc
 
 
@@ -171,20 +171,60 @@ def close_latex(filename_input, doc_input):
     file_path = r'./output/'
     filename = file_path + filename_input
     doc_input.generate_tex()
-    doc_input.generate_pdf()
+    # doc_input.generate_pdf()
 
     file = open(filename + '.tex')
     latex_string = file.read()
-    bad_string = '\\usepackage{lastpage}%'
-    good_string = '\\usepackage[table]{xcolor}%'
-    # print(latex_string)
-    latex_string = latex_string.replace(bad_string, good_string)
-
+    
     # for visual debugging
     # print('\n\n', latex_string[0:700], '\n\n')
+    
+    bad_string = '\\usepackage{lastpage}%'
+    good_string = '\\usepackage[table]{xcolor}%'
+    latex_string = latex_string.replace(bad_string, good_string)
+
+    # TODO reinsert qrcode package
+    bad_string = '\\usepackage{qrcode}%'
+    latex_string = latex_string.replace(bad_string, '%')
+
+    # # for visual debugging
+    # print('\n\n', latex_string[500:1700], '\n\n')
 
     with open(f'{filename}.tex', 'w') as f:
         f.write(latex_string)
+
+
+def header_stringify(teamcount, tabularx=False):
+    """
+
+    Parameters
+    ----------
+    teamcount : int
+        Number of teams in the round robin.
+    tabularx : bool, optional
+        Changes header string to account for newcolumntype Y, used in tabularx.
+        The default is False.
+
+    Returns
+    -------
+    A string for pylatex to use when defining the table.
+    Example: '|l|cc|cc|cc|cc|'
+
+    If tabularx is set to True, returns a string that utilizes newcolumntype Y.
+    Example: '|l|Y|Y|Y|Y|Y|Y|'
+
+    """
+
+    roomcount = teamcount // 2
+
+    header_string = '|l' + ('|cc' * roomcount + '|')
+    if teamcount % 2 == 1:
+        header_string = header_string + 'c|'
+
+    if tabularx is True:
+        header_string = '|l' + ('|Y' * teamcount + '|')
+
+    return header_string
 
 
 # %% classes, mostly not in use
@@ -220,41 +260,6 @@ class playoff_team():
         self.prelim_group = prelim_group
         self.playoff_bracket = playoff_bracket
         self.playoff_seed = playoff_seed
-
-# %% more function definitions
-
-
-def header_stringify(teamcount, tabularx=False):
-    """
-
-    Parameters
-    ----------
-    teamcount : int
-        Number of teams in the round robin.
-    tabularx : bool, optional
-        Changes header string to account for newcolumntype Y, used in tabularx.
-        The default is False.
-
-    Returns
-    -------
-    A string for pylatex to use when defining the table.
-    Example: '|l|cc|cc|cc|cc|'
-
-    If tabularx is set to True, returns a string that utilizes newcolumntype Y.
-    Example: '|l|Y|Y|Y|Y|Y|Y|'
-
-    """
-
-    roomcount = teamcount // 2
-
-    header_string = '|l' + ('|cc' * roomcount + '|')
-    if teamcount % 2 == 1:
-        header_string = header_string + 'c|'
-
-    if tabularx is True:
-        header_string = '|l' + ('|Y' * teamcount + '|')
-
-    return header_string
 
 
 # %% prints runtime

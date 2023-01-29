@@ -74,6 +74,7 @@ def clean_up_grid(schedule_grid):
 
 def specific_team_scheduler(team, schedule_grid, room_list, code_dict,
                             round_start=1):
+    
     # generate room_list with duplicated values
     # need this for finding an opponent at a particular index
     dup_room_list = [room for room in room_list for _ in (0, 1)]
@@ -92,7 +93,7 @@ def specific_team_scheduler(team, schedule_grid, room_list, code_dict,
 
         specific_grid[0][0] = NoEscape('\\cellcolor{gray}')
 
-    # for visual debugging
+    # # for visual debugging
     # print(*specific_grid, sep='\n')
     # print('\n\n\n\n')
 

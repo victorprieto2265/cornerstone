@@ -110,9 +110,9 @@ def standard_schedule(group_name, teamcode_dict, room_dict, roundstart=1,
         schedule_grid.append(new_row)
 
     # for debugging
-    # print('\n\n***schedule grid***\n\n')
-    # print(*schedule_grid, sep='\n')
-    # print('\n\n')
+    print('\n\n***schedule grid***\n\n')
+    print(*schedule_grid, sep='\n')
+    print('\n\n')
 
     return schedule_grid
 
