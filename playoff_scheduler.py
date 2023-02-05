@@ -19,7 +19,7 @@ This script accepts the prelim_analysis output and reorders teams into
 a list for playoffs.
 
 TODO: this script has big problems with reading tournament format codes. Right
-now, it is hard-coded into nsc_scheduler.py, which needs to be changed. 
+now, it is hard-coded into nsc_scheduler.py, which needs to be changed.
 
 TODO: removed emergency spot check of all teams + assigned codes.
 
@@ -67,7 +67,7 @@ sorted_list = code_2_scheduler(sorted_list, schedule_code_2)
 # codecheck = input('\nAre all teams assigned the correct code?\n'
 #                   + 'enter "Y" if yes: ')
 # if codecheck not in ['Y', 'y', 'yes']:
-#     print('\nCodecheck failed. Correct team codes in data input and retry.' + 
+#     print('\nCodecheck failed. Correct team codes in data input and retry.' +
 #           '\nplayoff_scheduler.py')
 #     sys.exit()
 
@@ -147,24 +147,25 @@ for bracket_name in playoff_bracket_names:
                                        roundstart=prelim_round_count+1))
 
     full_schedule_grid.append(schedule_grid)
-    
-    # identify first playoff room for all teams
-    room_row = schedule_grid[0]
+
+    # produce roomlist + bye if needed
+    roomlist = [k for k, v in list(playoff_room_dict.items())
+                if k.startswith(bracket_name)]
+    roomlist = [playoff_room_dict[i] for i in roomlist]
+
+    if schedule_grid[0][-1] == 'BYE':
+        roomlist.append('BYE')
+
+    # populate first_playoff_rooms dict
     first_row = schedule_grid[1]
-    print('\n* start *\n')
+    for index, team in enumerate(first_row[1:]):
+        room_index = int(index//2)
+        first_room = roomlist[room_index]
+        first_playoff_rooms[team] = first_room
 
-    # visual debugging
-    for index, team in enumerate(first_row):
-        print(f'room = {int(index//2 + 1)} -- team = {team}')
-    
-    print(room_row)
-    print(first_row)
-    print('\n* finish *\n')
-
-    
 # # prints output for visual debugging
 # for index, playoff_bracket in enumerate(playoff_bracket_names):
 #     print(f'\nPlayoff Bracket: {playoff_bracket}')
 #     print(*full_schedule_grid[index], sep='\n')
-    
+
 

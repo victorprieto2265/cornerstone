@@ -14,7 +14,8 @@ from function_definitions import (start_latex, close_latex,
 from playoff_scheduler import (full_schedule_grid,
                                teamcode_playoff_dict,
                                prelim_round_count,
-                               crossover)
+                               crossover,
+                               first_playoff_rooms)
 # from tournament_format import (tournament_name, tournament_location,
 #                                tournament_date, playoff_team_count,
 #                                )
@@ -302,7 +303,7 @@ doc.append(NoEscape(r'\end{center}'))
 doc.append(NoEscape(r'\rowcolors{3}{gray!15}{white}'))
 
 alternating_rows(doc, 'gray!15')
-with doc.create(LongTable('|l|lcc|')) as table:
+with doc.create(LongTable('|l|ccc|')) as table:
     table.append(NoEscape(r'\rowcolor{gray!30}'))
     head_foot_row = (r'\textbf{Team Name} '
                       + r'&\textbf{Prelim Bracket}'
@@ -327,8 +328,7 @@ with doc.create(LongTable('|l|lcc|')) as table:
         playoff_bracket = teamcode_playoff_dict[teamcode][:-1]
         team = playoff_team(i[0], teamcode, i[2],
                             playoff_bracket, playoff_seed)
-        # TODO write function to identify first round room for each team
-        first_room = 'placeholder ballroom'
+        first_room = first_playoff_rooms[teamcode]
         table.add_row(team.name,
                       team.prelim_group,
                       team.playoff_bracket,
